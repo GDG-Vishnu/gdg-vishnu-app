@@ -55,7 +55,7 @@ export interface ButtonProps extends MotionButtonPropsType {
   stretch?: boolean;
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+const Button3D = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       className,
@@ -76,8 +76,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <motion.button
         className={cn(
           buttonVariants({ variant, size, className }),
-          stretch && "w-full",
-          "px-12"
+          stretch && "w-full"
         )}
         ref={ref}
         {...props}
@@ -96,7 +95,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     );
   }
 );
-Button.displayName = "Button";
+Button3D.displayName = "Button";
 
 export interface ButtonGroupProps
   extends React.HTMLAttributes<HTMLDivElement> {}
@@ -119,4 +118,4 @@ export const ButtonGroup = React.forwardRef<HTMLDivElement, ButtonGroupProps>(
 
 ButtonGroup.displayName = "ButtonGroup";
 
-export { Button, buttonVariants };
+export { Button3D, buttonVariants };

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Button as MagneticButton } from "@/components/ui/3d-button";
+import { Button3D as MagneticButton } from "@/components/ui/3d-button";
 
 const ComingSoonPage = () => {
   return (
@@ -76,7 +76,7 @@ const ComingSoonPage = () => {
 
         {/* Coming soon message */}
         <div className="text-center mb-8">
-          <MagneticButton>Coming Soon</MagneticButton>
+          <MagneticButton className="px-12">Coming Soon</MagneticButton>
         </div>
 
         {/* Description */}
