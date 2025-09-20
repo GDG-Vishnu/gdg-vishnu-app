@@ -47,31 +47,32 @@ const ComingSoonPage = () => {
 
         {/* Main heading with Google colors */}
         <div className="text-center mb-8">
-          <h1 className="text-6xl md:text-8xl font-bold mb-4">
-            <span className="text-black">Google </span>
-            <span className="text-black relative">
-              Developer
-              {/* Yellow highlight circle */}
-              <div className="absolute -inset-2 border-4 border-yellow-400 rounded-full opacity-60 transform rotate-3"></div>
-            </span>
-            <span> Groups</span>
+          <h1 className="text-6xl md:text-8xl font-bold mb-6 font-mono leading-tight">
+            <div className="mb-2">
+              <span className="text-black">Google </span>
+              <span className="text-black relative">
+                Developer
+                {/* Yellow highlight circle */}
+                <div className="absolute -inset-2 border-4 border-yellow-400 rounded-full opacity-60 transform rotate-3"></div>
+              </span>
+            </div>
+            <div className="text-black">Groups</div>
+            <div className="text-2xl md:text-3xl font-semibold text-gray-600 font-mono tracking-wider mt-2">
+              On Campus
+            </div>
           </h1>
 
-          <h2 className="text-4xl md:text-6xl font-bold text-black mb-2">
-            On Campus
-          </h2>
-
-          <h3 className="text-4xl md:text-6xl font-bold text-black">
+          <h3 className="text-3xl md:text-4xl font-bold text-blue-600 font-mono tracking-wide">
             Vishnu Bhimavaram
           </h3>
         </div>
 
         {/* Subtitle */}
-        <div className="text-center mb-12">
-          <p className="text-xl md:text-2xl text-gray-600 font-medium">
+        {/* <div className="text-center mb-12">
+          <p className="text-xl md:text-2xl text-gray-500 font-medium font-mono tracking-wide">
             Converting Ideas Into Reality!
           </p>
-        </div>
+        </div> */}
 
         {/* Coming soon message */}
         <div className="text-center mb-8">
