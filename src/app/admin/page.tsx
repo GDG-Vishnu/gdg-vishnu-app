@@ -1,9 +1,15 @@
 "use client";
 
-import React from "react";
+import { useRouter } from "next/navigation";
+import React, { useEffect } from "react";
 
-const page = () => {
-  return <div>page</div>;
+const DashboardPage = () => {
+  const router = useRouter();
+  useEffect(() => {
+    router.push("/admin/dashboard");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  return <div>DashboardPage</div>;
 };
 
-export default page;
+export default DashboardPage;
