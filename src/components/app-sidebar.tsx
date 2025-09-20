@@ -1,18 +1,19 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import { GalleryVerticalEnd, FormInput } from "lucide-react";
+import Logo from "@/assets/Logo.webp";
 
-import { NavMain } from "@/components/nav-main";
 import { NavProjects } from "@/components/nav-projects";
 import { NavUser } from "@/components/nav-user";
-import { TeamSwitcher } from "@/components/team-switcher";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
+  useSidebar,
 } from "@/components/ui/sidebar";
 
 // This is sample data.
@@ -169,11 +170,53 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { state } = useSidebar();
+  const isCollapsed = state === "collapsed";
+
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader>{/* place any gdg icons here */}</SidebarHeader>
+      <SidebarHeader>
+        {/* GDG Header */}
+        <div className="p-4 text-center">
+          {!isCollapsed && (
+            <>
+              <div className="mb-4 flex justify-center">
+                <div className="relative">
+                  {/* Circular border with 4 colored segments */}
+                  <div
+                    className="w-24 h-24 rounded-full p-1 flex items-center justify-center"
+                    style={{
+                      background: `conic-gradient(
+          #4285F4 0deg 90deg,
+          #EA4335 90deg 180deg,
+          #FBBC04 180deg 270deg,
+          #34A853 270deg 360deg
+        )`,
+                    }}
+                  >
+                    <div className="w-full h-full rounded-full overflow-hidden flex items-center justify-center bg-white">
+                      <Image
+                        src={Logo}
+                        alt="GDG Logo"
+                        width={96} // full width
+                        height={96} // full height
+                        className="object-contain"
+                        priority
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Google Developer Groups Text */}
+              <h1 className="text-lg font-normal tracking-wide text-foreground">
+                Google Developer Groups
+              </h1>
+            </>
+          )}
+        </div>
+      </SidebarHeader>
       <SidebarContent>
-        {/* <NavMain items={data.navMain} /> */}
         <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
