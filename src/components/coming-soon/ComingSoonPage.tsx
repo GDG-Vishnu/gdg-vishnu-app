@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { MagneticButton } from "@/components/ui/magnetic-button";
+import { Button as MagneticButton } from "@/components/ui/3d-button";
 
 const ComingSoonPage = () => {
   return (
@@ -54,10 +54,11 @@ const ComingSoonPage = () => {
               {/* Yellow highlight circle */}
               <div className="absolute -inset-2 border-4 border-yellow-400 rounded-full opacity-60 transform rotate-3"></div>
             </span>
+            <span> Groups</span>
           </h1>
 
           <h2 className="text-4xl md:text-6xl font-bold text-black mb-2">
-            Groups On Campus
+            On Campus
           </h2>
 
           <h3 className="text-4xl md:text-6xl font-bold text-black">
@@ -74,11 +75,7 @@ const ComingSoonPage = () => {
 
         {/* Coming soon message */}
         <div className="text-center mb-8">
-          <MagneticButton distance={0.6}>
-            <div className="bg-gradient-to-r from-purple-500 to-blue-600 text-white px-8 py-4 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer">
-              Coming Soon
-            </div>
-          </MagneticButton>
+          <MagneticButton>Coming Soon</MagneticButton>
         </div>
 
         {/* Description */}
