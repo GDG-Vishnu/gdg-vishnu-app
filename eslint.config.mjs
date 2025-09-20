@@ -19,7 +19,9 @@ const eslintConfig = [
       "build/**",
       "next-env.d.ts",
     ],
-    rules: {},
+    rules: {
+      "@typescript-eslint/no-empty-object-type": "off",
+    },
   },
 ];
 
