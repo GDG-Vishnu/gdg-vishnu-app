@@ -16,7 +16,9 @@ export default function Page({ children }: Props) {
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <div className="flex flex-1 flex-col gap-4 bg-gray-100">{children}</div>
+        <div className="flex flex-1 flex-col gap-4 bg-background">
+          {children}
+        </div>
       </SidebarInset>
 
       {/* Floating Calendar Button3D */}

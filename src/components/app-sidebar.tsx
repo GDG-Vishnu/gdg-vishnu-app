@@ -17,6 +17,7 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { AnimatedThemeToggler } from "./ui/animated-theme-toggler";
 
 // This is sample data.
 /*
@@ -189,6 +190,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         {/* GDG Header */}
+        <AnimatedThemeToggler />
+
         <div className="p-4 text-center">
           {!isCollapsed && (
             <>
