@@ -1,5 +1,6 @@
 import React from "react";
 import { AppCard } from "@/components/ui/app-card";
+import GradientCard from "@/components/global/GradientCard";
 
 const FormsPage = () => {
   const formCards = [
@@ -70,7 +71,7 @@ const FormsPage = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {formCards.map((card, index) => (
           <AppCard
             key={index}
@@ -83,6 +84,12 @@ const FormsPage = () => {
             badge={card.badge}
           />
         ))}
+      </div> */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <GradientCard />
+        <GradientCard variant="green" />
+        <GradientCard variant="yellow" />
+        <GradientCard variant="red" />
       </div>
     </div>
   );
