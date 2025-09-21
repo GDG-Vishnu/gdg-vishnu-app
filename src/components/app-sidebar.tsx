@@ -3,6 +3,7 @@
 import * as React from "react";
 import Image from "next/image";
 import { GalleryVerticalEnd, FormInput } from "lucide-react";
+import { useSession } from "next-auth/react";
 import Logo from "@/assets/Logo.webp";
 
 import { NavProjects } from "@/components/nav-projects";
@@ -172,7 +173,17 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { state } = useSidebar();
+  const { data: session } = useSession();
   const isCollapsed = state === "collapsed";
+
+  // Fallback user data if session is not available
+  const userData = session?.user
+    ? {
+        name: session.user.name || "User",
+        email: session.user.email || "",
+        avatar: session.user.image || "",
+      }
+    : data.user;
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -221,7 +232,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={userData} />
         <div className="p-2">
           <SidebarTrigger className="w-full" />
         </div>

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   BadgeCheck,
@@ -7,13 +7,11 @@ import {
   CreditCard,
   LogOut,
   Sparkles,
-} from "lucide-react"
+} from "lucide-react";
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,24 +20,40 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
 export function NavUser({
   user,
 }: {
   user: {
-    name: string
-    email: string
-    avatar: string
-  }
+    name: string;
+    email: string;
+    avatar: string;
+  };
 }) {
-  const { isMobile } = useSidebar()
+  const { isMobile } = useSidebar();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      await signOut({
+        callbackUrl: "/auth/login", // or "/" if you prefer
+        redirect: true,
+      });
+      // Force a page reload to ensure session is completely cleared
+      window.location.href = "/";
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Fallback redirect
+      router.push("/");
+    }
+  };
 
   return (
     <SidebarMenu>
@@ -102,7 +116,7 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>
               <LogOut />
               Log out
             </DropdownMenuItem>
@@ -110,5 +124,5 @@ export function NavUser({
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }

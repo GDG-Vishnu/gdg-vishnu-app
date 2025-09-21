@@ -76,7 +76,8 @@ const Button3D = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <motion.button
         className={cn(
           buttonVariants({ variant, size, className }),
-          stretch && "w-full"
+          stretch && "w-full",
+          "cursor-pointer"
         )}
         ref={ref}
         {...props}
