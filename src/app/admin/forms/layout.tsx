@@ -1,9 +1,11 @@
 import React from "react";
 
-type Props = {};
+type Props = {
+  children: React.ReactNode;
+};
 
 const FormsLayout = (props: Props) => {
-  return <div>FormsLayout</div>;
+  return <div>{props.children}</div>;
 };
 
 export default FormsLayout;
