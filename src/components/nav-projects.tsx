@@ -22,10 +22,10 @@ export function NavProjects({
   }[];
 }) {
   const pathname = usePathname();
+  const { state } = useSidebar();
 
   const getActiveStyles = (url: string, index: number) => {
     const isActive = pathname === url;
-    const { state, toggleSidebar } = useSidebar();
 
     if (isActive) {
       // Google colors rotation
