@@ -2,7 +2,8 @@ import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
-import { IconLoader2, TablerIcon } from "@tabler/icons-react";
+import { TablerIcon } from "@tabler/icons-react";
+import { InlineSpinner } from "@/components/ui/loading";
 
 import { motion, MotionProps } from "framer-motion";
 
@@ -82,11 +83,7 @@ const Button3D = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         {...props}
       >
-        {isLoading ? (
-          <IconLoader2 {...TABLER_ICON_STYLE} className="animate-spin" />
-        ) : (
-          <></>
-        )}
+        {isLoading ? <InlineSpinner size="sm" /> : <></>}
         {!isLoading && supportIcon && (
           <SupportIconRender {...TABLER_ICON_STYLE} />
         )}

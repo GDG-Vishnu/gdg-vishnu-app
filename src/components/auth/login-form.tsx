@@ -11,7 +11,8 @@ import { Button3D } from "@/components/ui/3d-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
+import { InlineSpinner } from "@/components/ui/loading";
 import Image from "next/image";
 
 // Google Logo Component
@@ -267,7 +268,7 @@ export function LoginForm() {
         >
           {isGoogleLoading ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <InlineSpinner className="mr-2" />
               Connecting...
             </>
           ) : (

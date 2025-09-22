@@ -358,9 +358,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {isCollapsed && (
           <div className="flex flex-col items-center py-2 space-y-2">
             <button className="flex items-center justify-center w-10 h-10 rounded-lg bg-transparent hover:bg-accent/50 transition-colors">
-              <HelpCircle className="h-4 w-4 text-muted-foreground" />
-            </button>
-            <button className="flex items-center justify-center w-10 h-10 rounded-lg bg-transparent hover:bg-accent/50 transition-colors">
               <Settings className="h-4 w-4 text-muted-foreground" />
             </button>
             <button

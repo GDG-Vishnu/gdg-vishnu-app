@@ -1,7 +1,15 @@
-import { Suspense } from "react";
+"use client";
+
+import { Suspense, useState, useEffect } from "react";
+import { UserRole } from "@prisma/client";
 import { getAllUsers } from "@/actions/users";
 import { UsersTable } from "./components/UsersTable";
 import { UsersStats } from "./components/UsersStats";
+import { PageLoading } from "@/components/ui/loading-fallbacks";
+import {
+  StatsGridSkeleton,
+  UsersTableSkeleton,
+} from "@/components/ui/skeleton-loaders";
 import {
   Card,
   CardContent,
@@ -10,10 +18,62 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-async function UsersTableWrapper() {
-  const result = await getAllUsers();
+// Type for users returned from getAllUsers
+type UserFromAPI = {
+  id: string;
+  email: string;
+  name: string | null;
+  role: UserRole;
+  emailVerified: Date | null;
+  image: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  _count: {
+    accounts: number;
+    sessions: number;
+  };
+};
 
-  if (!result.success) {
+function UsersStatsWrapper() {
+  return (
+    <Suspense fallback={<StatsGridSkeleton />}>
+      <UsersStats />
+    </Suspense>
+  );
+}
+
+function UsersTableWrapper() {
+  const [users, setUsers] = useState<UserFromAPI[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        // Add a small delay to better show the skeleton loader
+        await new Promise((resolve) => setTimeout(resolve, 800));
+
+        const result = await getAllUsers();
+        if (result.success) {
+          setUsers(result.data || []);
+        } else {
+          setError(result.error || "Failed to load users");
+        }
+      } catch {
+        setError("An unexpected error occurred");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  if (loading) {
+    return <UsersTableSkeleton />;
+  }
+
+  if (error) {
     return (
       <Card>
         <CardHeader>
@@ -21,18 +81,33 @@ async function UsersTableWrapper() {
           <CardDescription>Error loading users</CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-destructive">{result.error}</p>
+          <p className="text-destructive">{error}</p>
         </CardContent>
       </Card>
     );
   }
 
-  return <UsersTable users={result.data || []} />;
+  return <UsersTable users={users} />;
 }
 
-export default async function UsersPage() {
+export default function UsersPage() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    // Simulate component mounting delay
+    const timer = setTimeout(() => {
+      setMounted(true);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!mounted) {
+    return <PageLoading message="Loading users page..." />;
+  }
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6">
       {/* Page Header */}
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Users Management</h1>
@@ -42,52 +117,10 @@ export default async function UsersPage() {
       </div>
 
       {/* Users Statistics */}
-      <Suspense
-        fallback={
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <Card key={i}>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">
-                    Loading...
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-6 w-16 animate-pulse bg-muted rounded" />
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        }
-      >
-        <UsersStats />
-      </Suspense>
+      <UsersStatsWrapper />
 
       {/* Users Table */}
-      <Suspense
-        fallback={
-          <Card>
-            <CardHeader>
-              <CardTitle>Users</CardTitle>
-              <CardDescription>Loading users...</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <div key={i} className="flex space-x-4">
-                    <div className="h-4 w-4 animate-pulse bg-muted rounded" />
-                    <div className="h-4 flex-1 animate-pulse bg-muted rounded" />
-                    <div className="h-4 w-20 animate-pulse bg-muted rounded" />
-                    <div className="h-4 w-20 animate-pulse bg-muted rounded" />
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        }
-      >
-        <UsersTableWrapper />
-      </Suspense>
+      <UsersTableWrapper />
     </div>
   );
 }
