@@ -3,10 +3,10 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { SessionProvider } from "next-auth/react";
-import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { Session } from "next-auth";
 import { useState } from "react";
 import { ThemeProvider } from "./theme-provider";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 interface ProvidersProps {
   children: React.ReactNode;
@@ -28,17 +28,19 @@ export function Providers({ children, session }: ProvidersProps) {
 
   return (
     <SessionProvider session={session}>
-      <ThemeProvider
-        attribute="class"
-        defaultTheme="system"
-        enableSystem
-        disableTransitionOnChange
-      >
-        <QueryClientProvider client={queryClient}>
-          {children}
-          <ReactQueryDevtools initialIsOpen={false} />
-        </QueryClientProvider>
-      </ThemeProvider>
+      <NuqsAdapter>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <QueryClientProvider client={queryClient}>
+            {children}
+            <ReactQueryDevtools initialIsOpen={false} />
+          </QueryClientProvider>
+        </ThemeProvider>
+      </NuqsAdapter>
     </SessionProvider>
   );
 }
