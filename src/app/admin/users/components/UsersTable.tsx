@@ -5,7 +5,8 @@ import { ReusableTable } from "@/components/reusable-table/ReusableTable";
 import { formatDate } from "@/lib/format";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, Mail, Shield, Eye } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { MoreHorizontal, Shield } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -71,9 +72,36 @@ export function UsersTable({ users }: UsersTableProps) {
   const columns: ColumnDef<UserFromAPI>[] = [
     {
       accessorKey: "name",
-      header: "Name",
+      header: "Full name",
       enableSorting: true,
       size: 200,
+      cell: ({ row }) => {
+        const user = row.original;
+        const initials = user.name
+          ? user.name
+              .split(" ")
+              .map((n) => n[0])
+              .join("")
+              .toUpperCase()
+          : user.email.charAt(0).toUpperCase();
+
+        return (
+          <div className="flex items-center gap-3">
+            <Avatar className="h-8 w-8">
+              <AvatarImage
+                src={user.image || undefined}
+                alt={user.name || user.email}
+              />
+              <AvatarFallback className="bg-muted text-xs font-medium">
+                {initials}
+              </AvatarFallback>
+            </Avatar>
+            <span className="font-medium text-foreground">
+              {user.name || "No name"}
+            </span>
+          </div>
+        );
+      },
     },
     {
       accessorKey: "email",
@@ -81,75 +109,71 @@ export function UsersTable({ users }: UsersTableProps) {
       enableSorting: true,
       size: 250,
       cell: ({ row }) => (
-        <div className="flex items-center gap-2">
-          <Mail className="h-4 w-4 text-muted-foreground" />
-          <span className="truncate">{row.original.email}</span>
-        </div>
+        <span className="text-sm text-muted-foreground">
+          {row.original.email}
+        </span>
       ),
     },
     {
       accessorKey: "role",
       header: "Role",
       enableSorting: true,
-      size: 120,
+      size: 150,
       cell: ({ row }) => (
-        <Badge variant={getRoleBadgeVariant(row.original.role) as never}>
+        <Badge
+          variant={getRoleBadgeVariant(row.original.role) as never}
+          className="text-xs"
+        >
           {row.original.role.replace("_", " ")}
         </Badge>
       ),
     },
     {
-      accessorKey: "emailVerified",
-      header: "Verified",
-      enableSorting: true,
-      size: 100,
-      cell: ({ row }) => (
-        <Badge variant={row.original.emailVerified ? "default" : "outline"}>
-          {row.original.emailVerified ? "Yes" : "No"}
-        </Badge>
-      ),
-    },
-    {
       accessorKey: "createdAt",
-      header: "Joined",
+      header: "Joined date",
       enableSorting: true,
       size: 120,
-      cell: ({ row }) => formatDate(row.original.createdAt),
+      cell: ({ row }) => (
+        <span className="text-sm text-muted-foreground">
+          {formatDate(row.original.createdAt)}
+        </span>
+      ),
     },
     {
       id: "actions",
       header: "Actions",
-      size: 60,
+      size: 100,
       cell: ({ row }) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(row.original.id)}
-            >
-              <Eye className="mr-2 h-4 w-4" />
-              Copy user ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuLabel>Change Role</DropdownMenuLabel>
-            {Object.values(UserRole).map((role) => (
+        <div className="flex items-center gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-[160px]">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem
-                key={role}
-                onClick={() => handleRoleUpdate(row.original.id, role)}
-                disabled={isPending || row.original.role === role}
+                onClick={() => navigator.clipboard.writeText(row.original.id)}
               >
-                <Shield className="mr-2 h-4 w-4" />
-                {role.replace("_", " ")}
+                Copy user ID
               </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+              <DropdownMenuSeparator />
+              <DropdownMenuLabel>Change Role</DropdownMenuLabel>
+              {Object.values(UserRole).map((role) => (
+                <DropdownMenuItem
+                  key={role}
+                  onClick={() => handleRoleUpdate(row.original.id, role)}
+                  disabled={isPending || row.original.role === role}
+                >
+                  <Shield className="mr-2 h-4 w-4" />
+                  {role.replace("_", " ")}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       ),
     },
   ];
@@ -167,13 +191,13 @@ export function UsersTable({ users }: UsersTableProps) {
       enableSorting={true}
       enablePagination={true}
       enableColumnVisibility={true}
-      enableRowSelection={false}
+      enableRowSelection={true}
       enableExport={true}
       searchPlaceholder="Search users..."
       emptyStateMessage="No users found"
       emptyStateDescription="No users match your search criteria"
-      initialPageSize={10}
-      pageSizeOptions={[10, 20, 50, 100]}
+      initialPageSize={15}
+      pageSizeOptions={[15, 30, 50, 100]}
     />
   );
 }

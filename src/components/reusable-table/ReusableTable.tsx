@@ -456,7 +456,7 @@ export function ReusableTable<TData = unknown>({
           containerClassName
         )}
       >
-        <div className="flex items-center justify-between gap-2 p-1">
+        <div className="flex items-center justify-between gap-2 p-1 bg-background">
           <div className="flex flex-1 items-center space-x-2">
             {/* Search */}
             {finalConfig.enableSearch && searchColumn && (
@@ -474,7 +474,7 @@ export function ReusableTable<TData = unknown>({
                       .getColumn(searchColumn)
                       ?.setFilterValue(event.target.value)
                   }
-                  className="pl-8 max-w-sm"
+                  className="pl-8 max-w-sm bg-background border-border"
                 />
               </div>
             )}
@@ -483,7 +483,11 @@ export function ReusableTable<TData = unknown>({
           <div className="flex items-center space-x-2">
             {/* Export */}
             {finalConfig.enableExport && (
-              <Button variant="outline" size="sm">
+              <Button
+                variant="outline"
+                size="sm"
+                className="border-border bg-background hover:bg-muted"
+              >
                 <Download className="mr-2 h-4 w-4" />
                 Export
               </Button>
@@ -497,15 +501,19 @@ export function ReusableTable<TData = unknown>({
         </div>
 
         {/* Table */}
-        <div className="overflow-hidden rounded-md border">
-          <Table className={tableClassName}>
+        <div className="overflow-hidden rounded-md border border-border bg-background">
+          <Table className={cn("bg-background", tableClassName)}>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
+                <TableRow
+                  key={headerGroup.id}
+                  className="border-border bg-muted/50 hover:bg-muted/50"
+                >
                   {headerGroup.headers.map((header) => (
                     <TableHead
                       key={header.id}
                       colSpan={header.colSpan}
+                      className="text-muted-foreground font-medium text-xs uppercase tracking-wider px-4 py-3"
                       style={{
                         ...getCommonPinningStyles({ column: header.column }),
                       }}
@@ -528,7 +536,8 @@ export function ReusableTable<TData = unknown>({
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
                     className={cn(
-                      onRowClick && "cursor-pointer hover:bg-muted/50",
+                      "border-border bg-background hover:bg-muted/30 transition-colors",
+                      onRowClick && "cursor-pointer",
                       row.getIsSelected() && "bg-muted"
                     )}
                     onClick={() => onRowClick?.(row)}
@@ -537,6 +546,7 @@ export function ReusableTable<TData = unknown>({
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
                         key={cell.id}
+                        className="px-4 py-3 text-sm"
                         style={{
                           ...getCommonPinningStyles({ column: cell.column }),
                         }}
@@ -550,7 +560,7 @@ export function ReusableTable<TData = unknown>({
                   </TableRow>
                 ))
               ) : (
-                <TableRow>
+                <TableRow className="border-border">
                   <TableCell
                     colSpan={table.getAllColumns().length}
                     className="h-24 text-center"

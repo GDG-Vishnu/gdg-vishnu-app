@@ -1,10 +1,7 @@
 "use client";
 
 import { Suspense, useState, useEffect } from "react";
-import { UserRole } from "@prisma/client";
-import { getAllUsers } from "@/actions/users";
 import { UsersTable } from "./components/UsersTable";
-import { UsersStats } from "./components/UsersStats";
 import { PageLoading } from "@/components/ui/loading-fallbacks";
 import {
   StatsGridSkeleton,
@@ -17,59 +14,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
-// Type for users returned from getAllUsers
-type UserFromAPI = {
-  id: string;
-  email: string;
-  name: string | null;
-  role: UserRole;
-  emailVerified: Date | null;
-  image: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-  _count: {
-    accounts: number;
-    sessions: number;
-  };
-};
+import { useUsers } from "@/hooks/use-users";
 
 function UsersStatsWrapper() {
   return (
-    <Suspense fallback={<StatsGridSkeleton />}>
-      <UsersStats />
-    </Suspense>
+    <Suspense fallback={<StatsGridSkeleton />}>{/* <UsersStats /> */}</Suspense>
   );
 }
 
 function UsersTableWrapper() {
-  const [users, setUsers] = useState<UserFromAPI[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: users, isLoading, error } = useUsers();
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        // Add a small delay to better show the skeleton loader
-        await new Promise((resolve) => setTimeout(resolve, 800));
-
-        const result = await getAllUsers();
-        if (result.success) {
-          setUsers(result.data || []);
-        } else {
-          setError(result.error || "Failed to load users");
-        }
-      } catch {
-        setError("An unexpected error occurred");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUsers();
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return <UsersTableSkeleton />;
   }
 
@@ -81,13 +37,13 @@ function UsersTableWrapper() {
           <CardDescription>Error loading users</CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-destructive">{error}</p>
+          <p className="text-destructive">{error.message}</p>
         </CardContent>
       </Card>
     );
   }
 
-  return <UsersTable users={users} />;
+  return <UsersTable users={users || []} />;
 }
 
 export default function UsersPage() {
@@ -109,12 +65,6 @@ export default function UsersPage() {
   return (
     <div className="space-y-6 p-6">
       {/* Page Header */}
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Users Management</h1>
-        <p className="text-muted-foreground">
-          Manage and monitor all users in your system
-        </p>
-      </div>
 
       {/* Users Statistics */}
       <UsersStatsWrapper />
