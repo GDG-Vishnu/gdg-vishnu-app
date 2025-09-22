@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { GalleryVerticalEnd, FormInput } from "lucide-react";
+import { GalleryVerticalEnd, FormInput, Users } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Logo from "@/assets/Logo.webp";
 
@@ -163,6 +163,11 @@ const data = {
       name: "Dashboard",
       url: "/admin/dashboard",
       icon: GalleryVerticalEnd,
+    },
+    {
+      name: "Users",
+      url: "/admin/users",
+      icon: Users,
     },
     {
       name: "Forms",
