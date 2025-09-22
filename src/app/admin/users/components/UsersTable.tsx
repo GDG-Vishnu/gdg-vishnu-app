@@ -161,6 +161,7 @@ export function UsersTable({ users }: UsersTableProps) {
       preset="default"
       title="Users Management"
       description="Manage user accounts and roles"
+      searchColumnKey="name"
       enableSearch={true}
       enableFilters={true}
       enableSorting={true}

@@ -19,6 +19,7 @@ export interface TableConfig<TData = unknown> {
   title?: string;
   description?: string;
   searchPlaceholder?: string;
+  searchColumnKey?: string;
   emptyStateMessage?: string;
   emptyStateDescription?: string;
 

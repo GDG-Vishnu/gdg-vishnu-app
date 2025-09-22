@@ -221,6 +221,7 @@ export function ReusableTable<TData = unknown>({
   title,
   description,
   searchPlaceholder = "Search...",
+  searchColumnKey,
   emptyStateMessage = "No results.",
   emptyStateDescription,
 
@@ -356,6 +357,24 @@ export function ReusableTable<TData = unknown>({
     enableAdvancedFilter: finalConfig.enableAdvancedFilters,
   });
 
+  // Determine search column
+  const searchColumn = useMemo(() => {
+    // Use provided searchColumnKey if available
+    if (searchColumnKey && table.getColumn(searchColumnKey)) {
+      return searchColumnKey;
+    }
+
+    // Find first filterable column as fallback
+    const filterableColumns = table
+      .getAllColumns()
+      .filter(
+        (col) =>
+          col.getCanFilter() && col.id !== "select" && col.id !== "actions"
+      );
+
+    return filterableColumns.length > 0 ? filterableColumns[0].id : null;
+  }, [searchColumnKey, table]);
+
   // Handle selection change
   const selectedRows = table.getFilteredSelectedRowModel().rows;
   if (onSelectionChange && selectedRows.length > 0) {
@@ -440,16 +459,20 @@ export function ReusableTable<TData = unknown>({
         <div className="flex items-center justify-between gap-2 p-1">
           <div className="flex flex-1 items-center space-x-2">
             {/* Search */}
-            {finalConfig.enableSearch && (
+            {finalConfig.enableSearch && searchColumn && (
               <div className="relative">
                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder={searchPlaceholder}
                   value={
-                    (table.getColumn("title")?.getFilterValue() as string) ?? ""
+                    (table
+                      .getColumn(searchColumn)
+                      ?.getFilterValue() as string) ?? ""
                   }
                   onChange={(event) =>
-                    table.getColumn("title")?.setFilterValue(event.target.value)
+                    table
+                      .getColumn(searchColumn)
+                      ?.setFilterValue(event.target.value)
                   }
                   className="pl-8 max-w-sm"
                 />

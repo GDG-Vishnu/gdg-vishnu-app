@@ -3,7 +3,8 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarRight } from "@/components/sidebar-right";
 import { Button3D } from "@/components/ui/3d-button";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarInset } from "@/components/ui/sidebar";
+import { EnhancedSidebarProvider } from "@/components/enhanced-sidebar-provider";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Calendar } from "lucide-react";
 
@@ -13,7 +14,7 @@ type Props = {
 
 export default function Page({ children }: Props) {
   return (
-    <SidebarProvider>
+    <EnhancedSidebarProvider>
       <AppSidebar />
       <SidebarInset>
         <div className="flex flex-1 flex-col gap-4 bg-background">
@@ -38,6 +39,6 @@ export default function Page({ children }: Props) {
           <SidebarRight />
         </SheetContent>
       </Sheet>
-    </SidebarProvider>
+    </EnhancedSidebarProvider>
   );
 }
