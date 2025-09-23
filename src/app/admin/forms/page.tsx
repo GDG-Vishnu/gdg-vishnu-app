@@ -4,8 +4,8 @@ import React from "react";
 import { useForms } from "@/hooks/use-forms";
 import GradientCard from "@/components/global/GradientCard";
 import { CreateFormSheet } from "@/components/forms/CreateFormSheet";
-import { Button } from "@/components/ui/button";
-import { Plus, Loader2, AlertCircle } from "lucide-react";
+import { Button3D as Button } from "@/components/ui/3d-button";
+import { Plus, Loader2, AlertCircle, ShieldAlert } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const FormsPage = () => {
@@ -28,6 +28,16 @@ const FormsPage = () => {
     return variants[index % variants.length];
   };
 
+  // Check if error is authentication related
+  const isAuthError =
+    error instanceof Error &&
+    (error.message.includes("Unauthorized") ||
+      error.message.includes("Participants cannot access"));
+
+  const handleRetry = () => {
+    window.location.reload();
+  };
+
   return (
     <div className="p-6">
       <div className="mb-8 flex items-center justify-between">
@@ -42,7 +52,7 @@ const FormsPage = () => {
 
         <CreateFormSheet>
           <Button variant="default" size="lg">
-            <Plus className="w-5 h-5 mr-2" />
+            <Plus className="w-5 h-5" />
             Add Form
           </Button>
         </CreateFormSheet>
@@ -61,54 +71,74 @@ const FormsPage = () => {
       {/* Error State */}
       {isError && (
         <div className="flex items-center justify-center py-12">
-          <div className="text-center">
-            <AlertCircle className="w-8 h-8 mx-auto mb-4 text-red-500" />
-            <p className="text-gray-600 mb-4">
-              {error instanceof Error ? error.message : "Failed to load forms"}
+          <div className="text-center max-w-md">
+            <AlertCircle className="w-12 h-12 mx-auto mb-4 text-red-500" />
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              {isAuthError ? "Access Denied" : "Error Loading Forms"}
+            </h3>
+            <p className="text-gray-600 mb-6">
+              {isAuthError
+                ? "Participants cannot access the form builder. Please contact your administrator if you need access."
+                : error instanceof Error
+                ? error.message
+                : "Failed to load forms. Please try again."}
             </p>
-            <Button variant="outline" onClick={() => window.location.reload()}>
-              Try Again
-            </Button>
+            <div className="space-y-3">
+              <Button variant="outline" onClick={handleRetry}>
+                Try Again
+              </Button>
+              {isAuthError && (
+                <div className="pt-2">
+                  <Button
+                    variant="default"
+                    onClick={() => router.push("/auth/login")}
+                  >
+                    Sign In Again
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
 
       {/* Forms Grid */}
       {!isLoading && !isError && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <>
           {forms && forms.length > 0 ? (
-            forms.map((form, index) => (
-              <GradientCard
-                key={form.id}
-                variant={getVariantForIndex(index)}
-                form={form}
-                onClick={() => handleFormClick(form.id)}
-              />
-            ))
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {forms.map((form, index) => (
+                <GradientCard
+                  key={form.id}
+                  variant={getVariantForIndex(index)}
+                  form={form}
+                  onClick={() => handleFormClick(form.id)}
+                />
+              ))}
+            </div>
           ) : (
-            <div className="col-span-full">
-              <div className="text-center py-12">
-                <div className="mb-4">
-                  <div className="w-24 h-24 mx-auto bg-gray-100 rounded-full flex items-center justify-center">
-                    <Plus className="w-12 h-12 text-gray-400" />
-                  </div>
+            <div className="text-center py-16">
+              <div className="mb-6">
+                <div className="w-32 h-32 mx-auto bg-gradient-to-br from-blue-50 to-indigo-100 rounded-full flex items-center justify-center">
+                  <Plus className="w-16 h-16 text-blue-500" />
                 </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  No forms yet
-                </h3>
-                <p className="text-gray-600 mb-6">
-                  Get started by creating your first form
-                </p>
-                <CreateFormSheet>
-                  <Button variant="default">
-                    <Plus className="w-4 h-4 mr-2" />
-                    Create Your First Form
-                  </Button>
-                </CreateFormSheet>
               </div>
+              <h3 className="text-2xl font-semibold text-gray-900 mb-3">
+                No forms yet
+              </h3>
+              <p className="text-gray-600 mb-8 max-w-md mx-auto">
+                Start building beautiful forms to collect data, feedback,
+                registrations, and more. Your first form is just a click away!
+              </p>
+              <CreateFormSheet>
+                <Button variant="default" size="lg">
+                  <Plus className="w-5 h-5 mr-2" />
+                  Create Your First Form
+                </Button>
+              </CreateFormSheet>
             </div>
           )}
-        </div>
+        </>
       )}
 
       {/* Stats Section (if forms exist) */}

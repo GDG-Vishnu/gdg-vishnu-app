@@ -54,6 +54,26 @@ async function checkAdminPermissions() {
   return currentUser;
 }
 
+// Helper function to check if user can view forms (everyone except participants)
+async function checkViewPermissions() {
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user) {
+    redirect("/auth/login");
+  }
+
+  const currentUser = await prisma.user.findUnique({
+    where: { email: session.user.email! },
+    select: { id: true, role: true },
+  });
+
+  if (!currentUser || currentUser.role === UserRole.PARTICIPANT) {
+    throw new Error("Unauthorized: Participants cannot access forms");
+  }
+
+  return currentUser;
+}
+
 // Create a new form
 export async function createForm(formData: z.infer<typeof createFormSchema>) {
   try {
@@ -116,7 +136,7 @@ export async function createForm(formData: z.infer<typeof createFormSchema>) {
 // Get all forms with basic info
 export async function getAllForms() {
   try {
-    await checkAdminPermissions();
+    await checkViewPermissions();
 
     const forms = await prisma.form.findMany({
       select: {
@@ -160,7 +180,7 @@ export async function getAllForms() {
 // Get a specific form with full configuration
 export async function getFormById(formId: string) {
   try {
-    await checkAdminPermissions();
+    await checkViewPermissions();
 
     if (!formId) {
       throw new Error("Form ID is required");
@@ -382,7 +402,7 @@ export async function duplicateForm(formId: string) {
 // Get form statistics
 export async function getFormStats(formId?: string) {
   try {
-    await checkAdminPermissions();
+    await checkViewPermissions();
 
     if (formId) {
       // Get stats for specific form
