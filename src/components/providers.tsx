@@ -37,7 +37,7 @@ export function Providers({ children, session }: ProvidersProps) {
         >
           <QueryClientProvider client={queryClient}>
             {children}
-            <ReactQueryDevtools position="top" initialIsOpen={false} />
+            <ReactQueryDevtools position="bottom" initialIsOpen={false} />
           </QueryClientProvider>
         </ThemeProvider>
       </NuqsAdapter>

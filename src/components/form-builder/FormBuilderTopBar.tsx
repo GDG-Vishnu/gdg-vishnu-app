@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 interface FormBuilderTopBarProps {
   formTitle?: string;
   activeTab?: string;
+  sections?: Array<{ id: string; title: string }>;
   onSave?: () => void;
   onPreview?: () => void;
   onCancel?: () => void;
@@ -19,8 +20,9 @@ interface FormBuilderTopBarProps {
 }
 
 export const FormBuilderTopBar: React.FC<FormBuilderTopBarProps> = ({
-  formTitle = "Website Audit",
+  formTitle = "Loading form...",
   activeTab = "basic-details",
+  sections = [],
   onSave,
   onPreview,
   onCancel,
@@ -33,15 +35,18 @@ export const FormBuilderTopBar: React.FC<FormBuilderTopBarProps> = ({
     router.push("/admin/forms");
   };
 
-  const sections = [
-    { id: "basic-details", name: "Basic Details" },
-    { id: "fields", name: "Fields" },
-    { id: "rules", name: "Rules" },
-    { id: "scripts", name: "Scripts" },
+  // Use dynamic sections if provided, otherwise fall back to default sections
+  const defaultSections = [
+    { id: "basic-details", title: "Basic Details" },
+    { id: "fields", title: "Fields" },
+    { id: "rules", title: "Rules" },
+    { id: "scripts", title: "Scripts" },
   ];
 
+  const displaySections = sections.length > 0 ? sections : defaultSections;
+
   return (
-    <div className="border-b bg-white">
+    <div className="border-b bg-background border-border">
       {/* First Line: Back button, Form name, Draft badge, and Action buttons */}
       <div className="flex items-center justify-between px-6 py-4">
         <div className="flex items-center space-x-4">
@@ -55,7 +60,7 @@ export const FormBuilderTopBar: React.FC<FormBuilderTopBarProps> = ({
           </Button>
 
           <div className="flex items-center space-x-3">
-            <h1 className="text-2xl font-semibold text-gray-900">
+            <h1 className="text-2xl font-semibold text-foreground">
               {formTitle}
             </h1>
             <Badge variant="outline" className="text-xs">
@@ -69,7 +74,7 @@ export const FormBuilderTopBar: React.FC<FormBuilderTopBarProps> = ({
             variant="outline"
             size="sm"
             onClick={onPreview}
-            className="flex items-center space-x-2"
+            className="gap-2"
           >
             <Eye className="h-4 w-4" />
             <span>View Form</span>
@@ -79,7 +84,7 @@ export const FormBuilderTopBar: React.FC<FormBuilderTopBarProps> = ({
             variant="destructive"
             size="sm"
             onClick={onCancel}
-            className="flex items-center space-x-2 text-white"
+            className="gap-2 text-white"
           >
             <X className="h-4 w-4" />
             <span>Cancel</span>
@@ -89,7 +94,7 @@ export const FormBuilderTopBar: React.FC<FormBuilderTopBarProps> = ({
             variant="default"
             size="sm"
             onClick={onSave}
-            className="flex items-center space-x-2"
+            className="gap-2"
           >
             <Save className="h-4 w-4" />
             <span>Save</span>
@@ -106,13 +111,13 @@ export const FormBuilderTopBar: React.FC<FormBuilderTopBarProps> = ({
             className="w-auto h-full"
           >
             <TabsList className="bg-transparent p-0 h-full">
-              {sections.map((section) => (
+              {displaySections.map((section) => (
                 <TabsTrigger
                   key={section.id}
                   value={section.id}
-                  className="border-b-2 border-transparent data-[state=active]:border-orange-500 data-[state=active]:bg-transparent rounded-none px-4 py-2 text-sm font-medium text-gray-600 data-[state=active]:text-gray-900 border-t-0 border-l-0 border-r-0 hover:text-gray-900 hover:bg-gray-50 data-[state=active]:shadow-none bg-white"
+                  className="border-b-2 border-orange-400 data-[state=active]:border-orange-400 data-[state=active]:bg-transparent rounded-none px-4 py-2 text-sm font-medium text-muted-foreground data-[state=active]:text-foreground border-t-0 border-l-0 border-r-0 hover:text-foreground hover:bg-muted data-[state=active]:shadow-none bg-background"
                 >
-                  {section.name}
+                  {section.title}
                 </TabsTrigger>
               ))}
             </TabsList>
@@ -122,7 +127,7 @@ export const FormBuilderTopBar: React.FC<FormBuilderTopBarProps> = ({
             variant="ghost"
             size="sm"
             onClick={onAddTab}
-            className="ml-2 h-8 w-8 p-0 text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+            className="ml-2 h-8 w-8 p-0 text-muted-foreground hover:text-foreground hover:bg-muted"
           >
             <Plus className="h-4 w-4" />
           </Button>

@@ -111,7 +111,10 @@ export const FormBuilderRightSidebar: React.FC<
 
   return (
     <div
-      className={cn("w-80 border-l bg-white flex flex-col h-full", className)}
+      className={cn(
+        "w-80 border-l bg-background border-border flex flex-col h-full",
+        className
+      )}
     >
       {/* Header with Search */}
       {/* <div className="p-4 border-b bg-white flex-shrink-0">
@@ -130,7 +133,7 @@ export const FormBuilderRightSidebar: React.FC<
       <ScrollArea className="flex-1 h-0">
         <div className="p-4">
           {filteredFieldTypes.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
+            <div className="text-center py-8 text-muted-foreground">
               <p>No components found</p>
               <p className="text-sm">Try adjusting your search</p>
             </div>
@@ -138,7 +141,7 @@ export const FormBuilderRightSidebar: React.FC<
             <div className="space-y-6">
               {Object.entries(groupedFieldTypes).map(([section, fields]) => (
                 <div key={section} className="space-y-3">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3">
+                  <h3 className="text-sm font-semibold text-foreground mb-3">
                     {section}
                   </h3>
                   <div className="grid grid-cols-2 gap-2">
@@ -147,14 +150,14 @@ export const FormBuilderRightSidebar: React.FC<
                         key={fieldType.name}
                         onClick={() => handleFieldClick(fieldType)}
                         className={cn(
-                          "relative flex items-center justify-start p-3 bg-white border border-gray-200 rounded-lg cursor-pointer hover:border-blue-300 hover:shadow-sm transition-all duration-200 shadow-xs",
-                          "group w-full text-left hover:bg-gray-50"
+                          "relative flex items-center justify-start p-3 bg-card border border-border rounded-lg cursor-pointer hover:border-primary hover:shadow-sm transition-all duration-200 shadow-xs",
+                          "group w-full text-left hover:bg-muted"
                         )}
                       >
                         {fieldType.isNew && (
                           <Badge
                             variant="secondary"
-                            className="absolute top-1 right-1 text-xs bg-blue-100 text-blue-700 px-1 py-0"
+                            className="absolute top-1 right-1 text-xs bg-primary/10 text-primary px-1 py-0"
                           >
                             New
                           </Badge>
@@ -168,7 +171,7 @@ export const FormBuilderRightSidebar: React.FC<
                           })}
                         </div>
 
-                        <span className="text-xs font-medium text-gray-700 truncate">
+                        <span className="text-xs font-medium text-foreground truncate">
                           {fieldType.name}
                         </span>
                       </button>

@@ -5,7 +5,6 @@ import * as SheetPrimitive from "@radix-ui/react-dialog";
 import { XIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { Separator } from "./separator";
 
 function Sheet({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
   return <SheetPrimitive.Root data-slot="sheet" {...props} />;
@@ -37,7 +36,7 @@ function SheetOverlay({
     <SheetPrimitive.Overlay
       data-slot="sheet-overlay"
       className={cn(
-        "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/50",
+        "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-background/80 backdrop-blur-sm",
         className
       )}
       {...props}
@@ -76,23 +75,22 @@ function SheetContent({
         )}
         {...props}
       >
-        <div className="bg-white rounded-lg h-full min-h-full w-full flex flex-col shadow-xl overflow-hidden">
-          <div className="flex items-center justify-between p-4 flex-shrink-0">
+        <div className="bg-card border border-border rounded-lg h-full min-h-full w-full flex flex-col shadow-xl overflow-hidden">
+          <div className="flex items-center justify-between p-4 flex-shrink-0 border-b border-border">
             <div className="flex items-center gap-4">
-              <SheetPrimitive.Close className="text-gray-500 hover:text-gray-700 transition-opacity cursor-pointer">
+              <SheetPrimitive.Close className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
                 <XIcon className="w-5 h-5" />
                 <span className="sr-only">Close</span>
               </SheetPrimitive.Close>
               {sheetTitle && (
-                <SheetPrimitive.Title className="text-xl">
+                <SheetPrimitive.Title className="text-xl font-semibold text-card-foreground">
                   {sheetTitle}
                 </SheetPrimitive.Title>
               )}
             </div>
             {actions}
           </div>
-          <Separator className="my-0 flex-shrink-0" />
-          <div className="px-10 py-2 flex-1 overflow-y-auto scrollbar-custom">
+          <div className="px-10 py-2 flex-1 overflow-y-auto scrollbar-custom bg-card">
             {children}
           </div>
         </div>

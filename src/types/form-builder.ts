@@ -1,4 +1,70 @@
 // Form Builder TypeScript Types
+import { FieldType as PrismaFieldType } from "@prisma/client";
+
+// Form types based on Prisma schema
+export interface FormData {
+  id: string;
+  name: string;
+  description: string | null;
+  imageUrl: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  createdBy: string | null;
+  creator: {
+    id: string;
+    name: string | null;
+    email: string;
+  } | null;
+  sections: SectionData[];
+  _count: {
+    submissions: number;
+  };
+}
+
+export interface SectionData {
+  id: string;
+  title: string | null;
+  order: number;
+  formId: string;
+  fields: FieldData[];
+}
+
+export interface FieldData {
+  id: string;
+  label: string;
+  placeholder: string | null;
+  type: PrismaFieldType;
+  required: boolean;
+  options: unknown; // JSON type
+  defaultValue: string | null;
+  order: number;
+  sectionId: string;
+  validation: unknown; // JSON type
+  styling: unknown; // JSON type
+  logic: unknown; // JSON type
+}
+
+// API Response types
+export interface ApiResponse<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+}
+
+// Section creation input
+export interface CreateSectionInput {
+  title: string;
+  formId: string;
+  order?: number;
+}
+
+// Tab interface for the form builder
+export interface FormSection {
+  id: string;
+  name: string;
+}
+
+// Legacy enum for backward compatibility
 
 export enum FieldType {
   INPUT = "INPUT",
