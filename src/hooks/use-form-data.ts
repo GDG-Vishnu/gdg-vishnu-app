@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getFormById } from "@/actions/forms";
 import { updateSection, createSection } from "@/actions/sections";
+import { createField, deleteField } from "@/actions/fields";
 import type { FormData, CreateSectionInput } from "@/types/form-builder";
 
 // Query keys for React Query
@@ -150,6 +151,59 @@ export function useDeleteForm() {
     },
     onError: (error) => {
       console.error("Error deleting form:", error);
+    },
+  });
+}
+
+// Hook to create a new field
+export function useCreateField() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (fieldData: {
+      sectionId: string;
+      label: string;
+      type: string;
+      placeholder?: string;
+      required?: boolean;
+      order?: number;
+      options?: string[] | Record<string, unknown>;
+    }) => {
+      const response = await createField(fieldData);
+      if (!response.success) {
+        throw new Error(response.error);
+      }
+      return response;
+    },
+    onSuccess: (data, variables) => {
+      // Invalidate form queries to refetch data
+      queryClient.invalidateQueries({ queryKey: ["form"] });
+      queryClient.invalidateQueries({ queryKey: ["sections"] });
+    },
+    onError: (error) => {
+      console.error("Create field error:", error);
+    },
+  });
+}
+
+// Hook to delete a field
+export function useDeleteField() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (fieldId: string) => {
+      const response = await deleteField(fieldId);
+      if (!response.success) {
+        throw new Error(response.error);
+      }
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["form"] });
+      queryClient.invalidateQueries({ queryKey: ["sections"] });
+    },
+    onError: (error) => {
+      console.error("Delete field error:", error);
     },
   });
 }
