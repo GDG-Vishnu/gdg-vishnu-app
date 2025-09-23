@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button3D } from "@/components/ui/3d-button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Eye, Save, ArrowLeft, X, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -17,10 +18,11 @@ interface FormBuilderTopBarProps {
   onCancel?: () => void;
   onTabChange?: (tab: string) => void;
   onAddTab?: () => void;
+  isLoading?: boolean;
 }
 
 export const FormBuilderTopBar: React.FC<FormBuilderTopBarProps> = ({
-  formTitle = "Loading form...",
+  formTitle,
   activeTab = "basic-details",
   sections = [],
   onSave,
@@ -28,6 +30,7 @@ export const FormBuilderTopBar: React.FC<FormBuilderTopBarProps> = ({
   onCancel,
   onTabChange,
   onAddTab,
+  isLoading = false,
 }) => {
   const router = useRouter();
 
@@ -60,9 +63,13 @@ export const FormBuilderTopBar: React.FC<FormBuilderTopBarProps> = ({
           </Button>
 
           <div className="flex items-center space-x-3">
-            <h1 className="text-2xl font-semibold text-foreground">
-              {formTitle}
-            </h1>
+            {isLoading ? (
+              <Skeleton className="h-8 w-48" />
+            ) : (
+              <h1 className="text-2xl font-semibold text-foreground">
+                {formTitle || "Untitled Form"}
+              </h1>
+            )}
             <Badge variant="outline" className="text-xs">
               Draft
             </Badge>
@@ -105,32 +112,44 @@ export const FormBuilderTopBar: React.FC<FormBuilderTopBarProps> = ({
       {/* Second Line: Tabs only */}
       <div className="flex items-center px-6 h-12">
         <div className="flex items-center h-full">
-          <Tabs
-            value={activeTab}
-            onValueChange={onTabChange}
-            className="w-auto h-full"
-          >
-            <TabsList className="bg-transparent p-0 h-full">
-              {displaySections.map((section) => (
-                <TabsTrigger
-                  key={section.id}
-                  value={section.id}
-                  className="border-b-2 border-orange-400 data-[state=active]:border-orange-400 data-[state=active]:bg-transparent rounded-none px-4 py-2 text-sm font-medium text-muted-foreground data-[state=active]:text-foreground border-t-0 border-l-0 border-r-0 hover:text-foreground hover:bg-muted data-[state=active]:shadow-none bg-background"
-                >
-                  {section.title}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </Tabs>
+          {isLoading ? (
+            <div className="flex items-center space-x-4">
+              <Skeleton className="h-8 w-24" />
+              <Skeleton className="h-8 w-16" />
+              <Skeleton className="h-8 w-20" />
+              <Skeleton className="h-8 w-18" />
+              <Skeleton className="h-8 w-8 rounded-full" />
+            </div>
+          ) : (
+            <>
+              <Tabs
+                value={activeTab}
+                onValueChange={onTabChange}
+                className="w-auto h-full"
+              >
+                <TabsList className="bg-transparent p-0 h-full">
+                  {displaySections.map((section) => (
+                    <TabsTrigger
+                      key={section.id}
+                      value={section.id}
+                      className="border-b-2 border-orange-400 data-[state=active]:border-orange-400 data-[state=active]:bg-transparent rounded-none px-4 py-2 text-sm font-medium text-muted-foreground data-[state=active]:text-foreground border-t-0 border-l-0 border-r-0 hover:text-foreground hover:bg-muted data-[state=active]:shadow-none bg-background"
+                    >
+                      {section.title}
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+              </Tabs>
 
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onAddTab}
-            className="ml-2 h-8 w-8 p-0 text-muted-foreground hover:text-foreground hover:bg-muted"
-          >
-            <Plus className="h-4 w-4" />
-          </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onAddTab}
+                className="ml-2 h-8 w-8 p-0 text-muted-foreground hover:text-foreground hover:bg-muted"
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </div>

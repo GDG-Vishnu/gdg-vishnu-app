@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Plus } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface FormBuilderLayoutProps {
   children: React.ReactNode;
@@ -92,7 +93,7 @@ const FormBuilderLayout: React.FC<FormBuilderLayoutProps> = ({ children }) => {
     <div className="h-screen flex flex-col bg-background">
       {/* Top Bar */}
       <FormBuilderTopBar
-        formTitle={formData?.name || "Loading..."}
+        formTitle={formData?.name}
         activeTab={activeTab}
         sections={sections}
         onSave={handleSave}
@@ -100,6 +101,7 @@ const FormBuilderLayout: React.FC<FormBuilderLayoutProps> = ({ children }) => {
         onCancel={handleCancel}
         onTabChange={handleTabChange}
         onAddTab={handleAddTab}
+        isLoading={isLoading}
       />
 
       {/* Main Content Area */}
@@ -107,8 +109,39 @@ const FormBuilderLayout: React.FC<FormBuilderLayoutProps> = ({ children }) => {
         {/* Form Builder Canvas */}
         <div className="flex-1 overflow-auto">
           {isLoading ? (
-            <div className="flex items-center justify-center h-full">
-              <div className="text-muted-foreground">Loading form...</div>
+            <div className="h-full bg-background">
+              <div className="p-6 space-y-6">
+                {/* Section skeleton */}
+                {[...Array(2)].map((_, index) => (
+                  <div
+                    key={index}
+                    className="bg-card border border-border rounded-lg p-6"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <Skeleton className="h-6 w-32" />
+                      <Skeleton className="h-4 w-16" />
+                    </div>
+                    <div className="space-y-4">
+                      {/* Field skeletons */}
+                      {[...Array(3)].map((_, fieldIndex) => (
+                        <div
+                          key={fieldIndex}
+                          className="p-4 bg-muted rounded-lg"
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="space-y-2">
+                              <Skeleton className="h-5 w-24" />
+                              <Skeleton className="h-4 w-32" />
+                              <Skeleton className="h-3 w-40" />
+                            </div>
+                            <Skeleton className="h-4 w-12" />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           ) : (
             children

@@ -2,43 +2,47 @@
 
 import { useParams } from "next/navigation";
 import React from "react";
-import { getFormById } from "@/actions/forms";
+import { useForm } from "@/hooks/use-form-data";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const FormBuilderPage = () => {
   const { id } = useParams();
-  const [formData, setFormData] = React.useState<Record<
-    string,
-    unknown
-  > | null>(null);
-  const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState<string | null>(null);
+  const formId = id as string;
 
-  React.useEffect(() => {
-    const fetchFormData = async () => {
-      if (id && typeof id === "string") {
-        try {
-          const result = await getFormById(id);
-          if (result.success && result.data) {
-            setFormData(result.data);
-          } else {
-            setError(result.error || "Failed to load form");
-          }
-        } catch (error) {
-          console.error("Error fetching form:", error);
-          setError("Failed to load form data");
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
+  const { data: formData, isLoading, error } = useForm(formId);
 
-    fetchFormData();
-  }, [id]);
-
-  if (loading) {
+  if (isLoading) {
     return (
-      <div className="h-full p-6 flex items-center justify-center">
-        <div className="text-muted-foreground">Loading form data...</div>
+      <div className="h-full bg-background">
+        <div className="p-6 space-y-6">
+          {/* Section skeleton */}
+          {[...Array(2)].map((_, index) => (
+            <div
+              key={index}
+              className="bg-card border border-border rounded-lg p-6"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <Skeleton className="h-6 w-32" />
+                <Skeleton className="h-4 w-16" />
+              </div>
+              <div className="space-y-4">
+                {/* Field skeletons */}
+                {[...Array(3)].map((_, fieldIndex) => (
+                  <div key={fieldIndex} className="p-4 bg-muted rounded-lg">
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-2">
+                        <Skeleton className="h-5 w-24" />
+                        <Skeleton className="h-4 w-32" />
+                        <Skeleton className="h-3 w-40" />
+                      </div>
+                      <Skeleton className="h-4 w-12" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
@@ -46,7 +50,9 @@ const FormBuilderPage = () => {
   if (error) {
     return (
       <div className="h-full p-6 flex items-center justify-center">
-        <div className="text-destructive">{error}</div>
+        <div className="text-destructive">
+          {error instanceof Error ? error.message : "Failed to load form"}
+        </div>
       </div>
     );
   }
@@ -60,7 +66,7 @@ const FormBuilderPage = () => {
   }
 
   // Render form sections sequentially
-  const sections = (formData.sections as unknown[]) || [];
+  const sections = formData.sections || [];
 
   return (
     <div className="h-full bg-background">
@@ -75,18 +81,17 @@ const FormBuilderPage = () => {
             </p>
           </div>
         ) : (
-          sections.map((section: unknown, index: number) => {
-            const sectionData = section as Record<string, unknown>;
-            const fields = (sectionData.fields as unknown[]) || [];
+          sections.map((section, index: number) => {
+            const fields = section.fields || [];
 
             return (
               <div
-                key={sectionData.id as string}
+                key={section.id}
                 className="bg-card border border-border rounded-lg p-6"
               >
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-lg font-semibold text-foreground">
-                    {(sectionData.name as string) || `Section ${index + 1}`}
+                    {section.title || `Section ${index + 1}`}
                   </h2>
                   <span className="text-sm text-muted-foreground">
                     {fields.length} fields
@@ -95,31 +100,26 @@ const FormBuilderPage = () => {
 
                 {fields.length > 0 ? (
                   <div className="space-y-4">
-                    {fields.map((field: unknown) => {
-                      const fieldData = field as Record<string, unknown>;
+                    {fields.map((field) => {
                       return (
-                        <div
-                          key={fieldData.id as string}
-                          className="p-4 bg-muted rounded-lg"
-                        >
+                        <div key={field.id} className="p-4 bg-muted rounded-lg">
                           <div className="flex items-center justify-between">
                             <div>
                               <h3 className="font-medium text-foreground">
-                                {fieldData.label as string}
+                                {field.label}
                               </h3>
                               <p className="text-sm text-muted-foreground">
-                                Type: {fieldData.type as string}{" "}
-                                {(fieldData.required as boolean) &&
-                                  "• Required"}
+                                Type: {field.type}{" "}
+                                {field.required && "• Required"}
                               </p>
-                              {(fieldData.placeholder as string) && (
+                              {field.placeholder && (
                                 <p className="text-xs text-muted-foreground mt-1">
-                                  Placeholder: {fieldData.placeholder as string}
+                                  Placeholder: {field.placeholder}
                                 </p>
                               )}
                             </div>
                             <div className="text-sm text-muted-foreground">
-                              Order: {fieldData.order as number}
+                              Order: {field.order}
                             </div>
                           </div>
                         </div>
