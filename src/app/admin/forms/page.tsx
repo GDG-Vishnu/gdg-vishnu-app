@@ -4,7 +4,8 @@ import React from "react";
 import { useForms } from "@/hooks/use-forms";
 import GradientCard from "@/components/global/GradientCard";
 import { CreateFormSheet } from "@/components/forms/CreateFormSheet";
-import { Button3D as Button } from "@/components/ui/3d-button";
+import { Button3D } from "@/components/ui/3d-button";
+import { Button } from "@/components/ui/button";
 import { Plus, Loader2, AlertCircle, ShieldAlert } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -13,7 +14,7 @@ const FormsPage = () => {
   const router = useRouter();
 
   const handleFormClick = (formId: string) => {
-    router.push(`/admin/forms/${formId}`);
+    router.push(`/admin/form-builder/${formId}`);
   };
 
   const getVariantForIndex = (index: number) => {
@@ -42,16 +43,12 @@ const FormsPage = () => {
     <div className="p-6">
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Form Builder
-          </h1>
-          <p className="text-gray-600">
-            Create, manage, and analyze your forms
-          </p>
+          <h1 className="text-3xl font-bold mb-2">Form Builder</h1>
+          <p>Create, manage, and analyze your forms</p>
         </div>
 
         <CreateFormSheet>
-          <Button variant="default" size="lg">
+          <Button variant="outline" size="default">
             <Plus className="w-5 h-5" />
             Add Form
           </Button>
@@ -84,17 +81,17 @@ const FormsPage = () => {
                 : "Failed to load forms. Please try again."}
             </p>
             <div className="space-y-3">
-              <Button variant="outline" onClick={handleRetry}>
+              <Button3D variant="outline" onClick={handleRetry}>
                 Try Again
-              </Button>
+              </Button3D>
               {isAuthError && (
                 <div className="pt-2">
-                  <Button
+                  <Button3D
                     variant="default"
                     onClick={() => router.push("/auth/login")}
                   >
                     Sign In Again
-                  </Button>
+                  </Button3D>
                 </div>
               )}
             </div>
@@ -131,75 +128,14 @@ const FormsPage = () => {
                 registrations, and more. Your first form is just a click away!
               </p>
               <CreateFormSheet>
-                <Button variant="default" size="lg">
-                  <Plus className="w-5 h-5 mr-2" />
+                <Button3D variant="default" size="default">
+                  <Plus className="w-5 h-5" />
                   Create Your First Form
-                </Button>
+                </Button3D>
               </CreateFormSheet>
             </div>
           )}
         </>
-      )}
-
-      {/* Stats Section (if forms exist) */}
-      {!isLoading && !isError && forms && forms.length > 0 && (
-        <div className="mt-12 pt-8 border-t border-gray-200">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-              <div className="flex items-center">
-                <div className="p-2 bg-blue-100 rounded-md">
-                  <Plus className="w-5 h-5 text-blue-600" />
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">
-                    Total Forms
-                  </p>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {forms.length}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-              <div className="flex items-center">
-                <div className="p-2 bg-green-100 rounded-md">
-                  <Plus className="w-5 h-5 text-green-600" />
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">
-                    Total Responses
-                  </p>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {forms.reduce(
-                      (total, form) => total + form._count.submissions,
-                      0
-                    )}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-              <div className="flex items-center">
-                <div className="p-2 bg-purple-100 rounded-md">
-                  <Plus className="w-5 h-5 text-purple-600" />
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">
-                    Total Sections
-                  </p>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {forms.reduce(
-                      (total, form) => total + form._count.sections,
-                      0
-                    )}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
       )}
     </div>
   );

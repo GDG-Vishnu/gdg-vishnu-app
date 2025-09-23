@@ -86,7 +86,7 @@ const GradientCard = ({ variant = "blue", form, onClick }: Props) => {
         variant
       )} w-72 h-48 p-4 rounded-lg border ${getBorderColor(
         variant
-      )} relative overflow-hidden cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-[1.02]`}
+      )} relative overflow-hidden cursor-pointer transition-all duration-200 hover:shadow-md `}
       onClick={onClick}
     >
       {/* Background pattern */}

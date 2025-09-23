@@ -12,7 +12,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
+import { Button3D as Button } from "@/components/ui/3d-button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -139,20 +139,14 @@ export function CreateFormSheet({ children }: CreateFormSheetProps) {
             </Button>
             <Button
               type="submit"
+              isLoading={isSubmitting || createFormMutation.isPending}
               disabled={isSubmitting || createFormMutation.isPending}
               className="flex-1"
             >
-              {isSubmitting || createFormMutation.isPending ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Creating...
-                </>
-              ) : (
-                <>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Create Form
-                </>
-              )}
+              <>
+                <Plus className="w-4 h-4" />
+                Create Form
+              </>
             </Button>
           </div>
         </form>
