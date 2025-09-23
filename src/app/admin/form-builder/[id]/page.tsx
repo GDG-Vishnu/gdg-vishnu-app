@@ -2,14 +2,63 @@
 
 import { useParams } from "next/navigation";
 import React from "react";
-import { useForm } from "@/hooks/use-form-data";
+import { useForm, useUpdateSection } from "@/hooks/use-form-data";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
+import { Save, RotateCcw, Loader2 } from "lucide-react";
 
 const FormBuilderPage = () => {
   const { id } = useParams();
   const formId = id as string;
 
   const { data: formData, isLoading, error } = useForm(formId);
+  const updateSectionMutation = useUpdateSection();
+
+  // Track section title edits - section ID -> current edited title
+  const [sectionTitles, setSectionTitles] = React.useState<
+    Record<string, string>
+  >({});
+
+  // Initialize section titles when form data loads
+  React.useEffect(() => {
+    if (formData?.sections) {
+      const initialTitles: Record<string, string> = {};
+      formData.sections.forEach((section) => {
+        initialTitles[section.id] = section.title || "";
+      });
+      setSectionTitles(initialTitles);
+    }
+  }, [formData]);
+
+  const handleSectionTitleChange = (sectionId: string, value: string) => {
+    setSectionTitles((prev) => ({
+      ...prev,
+      [sectionId]: value,
+    }));
+  };
+
+  const handleSaveSection = async (sectionId: string) => {
+    const title = sectionTitles[sectionId]?.trim();
+    if (title) {
+      try {
+        await updateSectionMutation.mutateAsync({
+          sectionId,
+          title,
+        });
+      } catch (error) {
+        console.error("Error updating section:", error);
+      }
+    }
+  };
+
+  const handleResetSection = (sectionId: string, originalTitle: string) => {
+    setSectionTitles((prev) => ({
+      ...prev,
+      [sectionId]: originalTitle || "",
+    }));
+  };
 
   if (isLoading) {
     return (
@@ -83,57 +132,115 @@ const FormBuilderPage = () => {
         ) : (
           sections.map((section, index: number) => {
             const fields = section.fields || [];
+            const currentTitle =
+              sectionTitles[section.id] || section.title || "";
+            const originalTitle = section.title || "";
+            const hasChanges = currentTitle !== originalTitle;
 
             return (
-              <div
-                key={section.id}
-                className="bg-card border border-border rounded-lg p-6"
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-semibold text-foreground">
-                    {section.title || `Section ${index + 1}`}
-                  </h2>
-                  <span className="text-sm text-muted-foreground">
-                    {fields.length} fields
-                  </span>
-                </div>
+              <div key={section.id} className="space-y-4">
+                {/* Always Visible Edit Section Card */}
+                <Card className="p-4 bg-muted/50 border-dashed ">
+                  <div className="flex items-center gap-3">
+                    <Input
+                      value={currentTitle}
+                      onChange={(e) =>
+                        handleSectionTitleChange(section.id, e.target.value)
+                      }
+                      disabled={updateSectionMutation.isPending}
+                      placeholder="Enter section name..."
+                      className="flex-1 h-8 text-sm"
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          handleSaveSection(section.id);
+                        } else if (e.key === "Escape") {
+                          handleResetSection(section.id, originalTitle);
+                        }
+                      }}
+                    />
+                    <Button
+                      size="sm"
+                      onClick={() => handleSaveSection(section.id)}
+                      disabled={
+                        !currentTitle.trim() ||
+                        updateSectionMutation.isPending ||
+                        !hasChanges
+                      }
+                      className="h-8 px-3"
+                    >
+                      {updateSectionMutation.isPending ? (
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                      ) : (
+                        <Save className="w-3 h-3" />
+                      )}
+                      Save
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() =>
+                        handleResetSection(section.id, originalTitle)
+                      }
+                      disabled={updateSectionMutation.isPending || !hasChanges}
+                      className="h-8 px-3"
+                    >
+                      <RotateCcw className="w-3 h-3" />
+                      Reset
+                    </Button>
+                  </div>
+                </Card>
 
-                {fields.length > 0 ? (
-                  <div className="space-y-4">
-                    {fields.map((field) => {
-                      return (
-                        <div key={field.id} className="p-4 bg-muted rounded-lg">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <h3 className="font-medium text-foreground">
-                                {field.label}
-                              </h3>
-                              <p className="text-sm text-muted-foreground">
-                                Type: {field.type}{" "}
-                                {field.required && "• Required"}
-                              </p>
-                              {field.placeholder && (
-                                <p className="text-xs text-muted-foreground mt-1">
-                                  Placeholder: {field.placeholder}
+                {/* Section Content */}
+                <div className="bg-card border border-border rounded-lg p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-lg font-semibold text-foreground">
+                      {originalTitle || `Section ${index + 1}`}
+                    </h2>
+                    <span className="text-sm text-muted-foreground">
+                      {fields.length} fields
+                    </span>
+                  </div>
+
+                  {fields.length > 0 ? (
+                    <div className="space-y-4">
+                      {fields.map((field) => {
+                        return (
+                          <div
+                            key={field.id}
+                            className="p-4 bg-muted rounded-lg"
+                          >
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <h3 className="font-medium text-foreground">
+                                  {field.label}
+                                </h3>
+                                <p className="text-sm text-muted-foreground">
+                                  Type: {field.type}{" "}
+                                  {field.required && "• Required"}
                                 </p>
-                              )}
-                            </div>
-                            <div className="text-sm text-muted-foreground">
-                              Order: {field.order}
+                                {field.placeholder && (
+                                  <p className="text-xs text-muted-foreground mt-1">
+                                    Placeholder: {field.placeholder}
+                                  </p>
+                                )}
+                              </div>
+                              <div className="text-sm text-muted-foreground">
+                                Order: {field.order}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <div className="text-center py-8 text-muted-foreground">
-                    <p>No fields in this section</p>
-                    <p className="text-sm mt-1">
-                      Drag fields from the sidebar to add them
-                    </p>
-                  </div>
-                )}
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <p>No fields in this section</p>
+                      <p className="text-sm mt-1">
+                        Drag fields from the sidebar to add them
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
             );
           })

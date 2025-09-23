@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getFormById } from "@/actions/forms";
+import { updateSection, createSection } from "@/actions/sections";
 import type { FormData, CreateSectionInput } from "@/types/form-builder";
 
 // Query keys for React Query
@@ -32,22 +33,17 @@ export function useCreateSection() {
 
   return useMutation({
     mutationFn: async (input: CreateSectionInput) => {
-      // TODO: Implement actual API call to create section
-      console.log("Creating section:", input);
+      const result = await createSection({
+        formId: input.formId,
+        title: input.title,
+        order: input.order || 0,
+      });
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      if (!result.success) {
+        throw new Error(result.error || "Failed to create section");
+      }
 
-      return {
-        success: true,
-        data: {
-          id: `section_${Date.now()}`,
-          title: input.title,
-          order: input.order || 0,
-          formId: input.formId,
-          fields: [],
-        },
-      };
+      return result;
     },
     onSuccess: (data, variables) => {
       // Invalidate and refetch form data
@@ -57,6 +53,39 @@ export function useCreateSection() {
     },
     onError: (error) => {
       console.error("Error creating section:", error);
+    },
+  });
+}
+
+// Hook to update section
+export function useUpdateSection() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (input: {
+      sectionId: string;
+      title: string;
+      description?: string | null;
+    }) => {
+      const result = await updateSection({
+        id: input.sectionId,
+        title: input.title,
+      });
+
+      if (!result.success) {
+        throw new Error(result.error || "Failed to update section");
+      }
+
+      return result;
+    },
+    onSuccess: (data) => {
+      // Update all forms that might contain this section
+      queryClient.invalidateQueries({
+        queryKey: ["form", data.data?.formId],
+      });
+    },
+    onError: (error) => {
+      console.error("Error updating section:", error);
     },
   });
 }
