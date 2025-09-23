@@ -2,7 +2,8 @@ import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
-import { IconLoader2, TablerIcon } from "@tabler/icons-react";
+import { TablerIcon } from "@tabler/icons-react";
+import { InlineSpinner } from "@/components/ui/loading";
 
 import { motion, MotionProps } from "framer-motion";
 
@@ -55,7 +56,7 @@ export interface ButtonProps extends MotionButtonPropsType {
   stretch?: boolean;
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+const Button3D = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       className,
@@ -77,16 +78,12 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(
           buttonVariants({ variant, size, className }),
           stretch && "w-full",
-          "px-12"
+          "cursor-pointer"
         )}
         ref={ref}
         {...props}
       >
-        {isLoading ? (
-          <IconLoader2 {...TABLER_ICON_STYLE} className="animate-spin" />
-        ) : (
-          <></>
-        )}
+        {isLoading ? <InlineSpinner size="sm" /> : <></>}
         {!isLoading && supportIcon && (
           <SupportIconRender {...TABLER_ICON_STYLE} />
         )}
@@ -96,7 +93,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     );
   }
 );
-Button.displayName = "Button";
+Button3D.displayName = "Button";
 
 export interface ButtonGroupProps
   extends React.HTMLAttributes<HTMLDivElement> {}
@@ -119,4 +116,4 @@ export const ButtonGroup = React.forwardRef<HTMLDivElement, ButtonGroupProps>(
 
 ButtonGroup.displayName = "ButtonGroup";
 
-export { Button, buttonVariants };
+export { Button3D, buttonVariants };

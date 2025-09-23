@@ -1,11 +1,89 @@
 "use client";
 
 import React from "react";
-import { Button as MagneticButton } from "@/components/ui/3d-button";
+import { useSession, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { Button3D as MagneticButton } from "@/components/ui/3d-button";
+import { LogOut, User, LogIn } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const ComingSoonPage = () => {
+  const { data: session } = useSession();
+  const router = useRouter();
+
+  console.log({
+    session,
+  });
+
+  const handleLogout = async () => {
+    try {
+      await signOut({
+        callbackUrl: "/",
+        redirect: true,
+      });
+    } catch (error) {
+      console.error("Logout error:", error);
+      router.push("/");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white relative overflow-hidden">
+      {/* Top right user info and logout button - responsive design */}
+      {session && (
+        <div className="absolute top-4 right-4 md:top-6 md:right-6 z-20 flex flex-col sm:flex-row items-end sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+          {/* User Avatar and Info */}
+          <div className="flex items-center space-x-2 border rounded-full p-1 shadow-xs w-32">
+            <Avatar className="h-6 w-6 sm:h-8 sm:w-8">
+              <AvatarImage
+                src={session.user?.image || ""}
+                alt={session.user?.name || "User"}
+              />
+              <AvatarFallback className="bg-blue-500 text-white text-xs sm:text-sm">
+                {session.user?.name?.charAt(0)?.toUpperCase() || (
+                  <User className="h-3 w-3 sm:h-4 sm:w-4" />
+                )}
+              </AvatarFallback>
+            </Avatar>
+            <div className="text-xs sm:text-sm">
+              <p className="font-medium text-gray-900 truncate max-w-20 sm:max-w-none">
+                {session.user?.name || "User"}
+              </p>
+              {/* <p className="text-xs text-gray-500 hidden sm:block">
+                {session.user?.role}
+              </p> */}
+            </div>
+          </div>
+
+          {/* Logout Button */}
+          <MagneticButton
+            variant="destructive"
+            onClick={handleLogout}
+            size="sm"
+            className="shadow-lg hover:shadow-xl transition-shadow duration-200 text-white text-xs sm:text-sm px-2 sm:px-4"
+          >
+            <LogOut className="h-3 w-3 sm:h-4 sm:w-4" />
+            {/* <span className="hidden xs:inline">Logout</span> */}
+            <span>Log out</span>
+          </MagneticButton>
+        </div>
+      )}
+
+      {/* Top right login button when user is not logged in */}
+      {!session && (
+        <div className="absolute top-4 right-4 md:top-6 md:right-6 z-20">
+          <MagneticButton
+            variant="default"
+            onClick={() => router.push("/auth/login")}
+            size="sm"
+            className="shadow-lg hover:shadow-xl transition-shadow duration-200 text-white text-xs sm:text-sm px-3 sm:px-4"
+          >
+            <LogIn className="h-3 w-3 sm:h-4 sm:w-4" />
+            <span className="hidden xs:inline">Login</span>
+            <span className="xs:hidden">Login</span>
+          </MagneticButton>
+        </div>
+      )}
       {/* Background decorative elements */}
       <div className="absolute inset-0 z-0">
         {/* Code brackets */}
@@ -76,7 +154,7 @@ const ComingSoonPage = () => {
 
         {/* Coming soon message */}
         <div className="text-center mb-8">
-          <MagneticButton>Coming Soon</MagneticButton>
+          <MagneticButton className="px-12">Coming Soon</MagneticButton>
         </div>
 
         {/* Description */}
