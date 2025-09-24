@@ -77,7 +77,7 @@ const FormBuilderLayout: React.FC<FormBuilderLayoutProps> = ({ children }) => {
 
   const handleFieldSelect = (fieldType: FieldType) => {
     console.log("Selected field:", fieldType);
-    // TODO: Implement field selection functionality
+    // This will be handled by the integration context
   };
 
   // Get sections from form data
@@ -149,7 +149,7 @@ const FormBuilderLayout: React.FC<FormBuilderLayoutProps> = ({ children }) => {
         </div>
 
         {/* Right Sidebar */}
-        <FormBuilderRightSidebar onFieldSelect={handleFieldSelect} />
+        {/* <FormBuilderRightSidebar onFieldSelect={handleFieldSelect} /> */}
       </div>
 
       {/* Add Section Sheet */}
