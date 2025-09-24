@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Save, RotateCcw, Loader2 } from "lucide-react";
+import FormComponentRender from "@/components/form-builder/FormComponentRender";
 
 const FormBuilderPage = () => {
   const { id } = useParams();
@@ -137,6 +138,10 @@ const FormBuilderPage = () => {
             const originalTitle = section.title || "";
             const hasChanges = currentTitle !== originalTitle;
 
+            console.log({
+              sections,
+            });
+
             return (
               <div key={section.id} className="space-y-4">
                 {/* Always Visible Edit Section Card */}
@@ -191,44 +196,24 @@ const FormBuilderPage = () => {
                 </Card>
 
                 {/* Section Content */}
-                <div className="bg-card border border-border rounded-lg p-6">
-                  <div className="flex items-center justify-between mb-4">
+                <div className="">
+                  {/* <div className="flex items-center justify-between mb-4">
                     <h2 className="text-lg font-semibold text-foreground">
                       {originalTitle || `Section ${index + 1}`}
                     </h2>
                     <span className="text-sm text-muted-foreground">
                       {fields.length} fields
                     </span>
-                  </div>
+                  </div> */}
 
                   {fields.length > 0 ? (
                     <div className="space-y-4">
                       {fields.map((field) => {
                         return (
-                          <div
+                          <FormComponentRender
                             key={field.id}
-                            className="p-4 bg-muted rounded-lg"
-                          >
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <h3 className="font-medium text-foreground">
-                                  {field.label}
-                                </h3>
-                                <p className="text-sm text-muted-foreground">
-                                  Type: {field.type}{" "}
-                                  {field.required && "• Required"}
-                                </p>
-                                {field.placeholder && (
-                                  <p className="text-xs text-muted-foreground mt-1">
-                                    Placeholder: {field.placeholder}
-                                  </p>
-                                )}
-                              </div>
-                              <div className="text-sm text-muted-foreground">
-                                Order: {field.order}
-                              </div>
-                            </div>
-                          </div>
+                            type={field.type}
+                          />
                         );
                       })}
                     </div>

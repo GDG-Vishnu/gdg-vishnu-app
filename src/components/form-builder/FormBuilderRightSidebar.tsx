@@ -5,30 +5,9 @@ import { fieldTypes, type FieldType } from "@/constants";
 import { Badge } from "@/components/ui/badge";
 // import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  // Search,
-  Phone,
-  List,
-  PenTool,
-  Sliders,
-  CalendarClock,
-  ToggleLeft,
-  Tag,
-  AlignLeft,
-  Star,
-  CircleDot,
-  CreditCard,
-  CheckSquare,
-  ListChecks,
-  Calendar,
-  Folder,
-  Type,
-  Hash,
-  MapPin,
-  ListPlus,
-  Lock,
-} from "lucide-react";
+
 import { cn } from "@/lib/utils";
+import { getFieldIcon } from "@/utils";
 
 interface FormBuilderRightSidebarProps {
   onFieldSelect?: (fieldType: FieldType) => void;
@@ -61,35 +40,6 @@ export const FormBuilderRightSidebar: React.FC<
   };
 
   // Map field types to appropriate icons/labels
-  const getFieldIcon = (fieldName: string) => {
-    const iconMap: Record<
-      string,
-      React.ComponentType<{ className?: string }>
-    > = {
-      Checkbox: CheckSquare,
-      Combobox: ListChecks,
-      "Date Picker": Calendar,
-      "Datetime Picker": CalendarClock,
-      "File Input": Folder,
-      Input: Type,
-      "Input OTP": Hash,
-      "Location Input": MapPin,
-      "Multi Select": ListPlus,
-      Password: Lock,
-      Phone: Phone,
-      Select: List,
-      "Signature Input": PenTool,
-      Slider: Sliders,
-      "Smart Datetime Input": CalendarClock,
-      Switch: ToggleLeft,
-      "Tags Input": Tag,
-      Textarea: AlignLeft,
-      Rating: Star,
-      RadioGroup: CircleDot,
-      "Credit Card": CreditCard,
-    };
-    return iconMap[fieldName] || Type;
-  };
 
   // Get random Google color for icons
   const getRandomColor = (fieldName: string) => {
@@ -164,10 +114,12 @@ export const FormBuilderRightSidebar: React.FC<
                         )}
 
                         <div className="mr-2 group-hover:scale-110 transition-transform flex-shrink-0">
-                          {React.createElement(getFieldIcon(fieldType.name), {
-                            className: `w-4 h-4 ${getRandomColor(
-                              fieldType.name
-                            )}`,
+                          {React.createElement(getFieldIcon(fieldType.type), {
+                            className: `w-4 h-4 
+                            `,
+                            // ${getRandomColor(
+                            //   fieldType.name
+                            // )}
                           })}
                         </div>
 
