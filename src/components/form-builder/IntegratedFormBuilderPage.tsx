@@ -70,19 +70,9 @@ function Section({ section }: SectionProps) {
   const fields = section.fields || [];
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Settings className="h-5 w-5" />
-            {section.title || "Untitled Section"}
-          </CardTitle>
-          <Badge variant="secondary" className="text-xs">
-            {fields.length} fields
-          </Badge>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-4">
+    <div className="w-full">
+      <div></div>
+      <div className="space-y-4">
         {fields.length === 0 ? (
           <div className="text-center py-8 border-2 border-dashed border-muted-foreground/25 rounded-lg">
             <div className="text-muted-foreground mb-2">
@@ -104,8 +94,8 @@ function Section({ section }: SectionProps) {
               ))}
           </div>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
 
