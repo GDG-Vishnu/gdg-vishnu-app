@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { fieldTypes, type FieldType } from "@/constants";
+import { fieldTypes, type FieldTypeInfo } from "@/constants";
+import { FieldType } from "@/types/form-builder";
 import { Badge } from "@/components/ui/badge";
 // import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";

@@ -1,4 +1,6 @@
-export interface FieldType {
+import { FieldType } from "@/types/form-builder";
+
+export interface FieldTypeInfo {
   name: string;
   isNew: boolean;
   section: string;
@@ -6,7 +8,7 @@ export interface FieldType {
 }
 import { FieldType as FormalFieldTypes } from "@prisma/client";
 
-export const fieldTypes: FieldType[] = [
+export const fieldTypes: FieldTypeInfo[] = [
   // Basic Input Components
   {
     name: "Input",

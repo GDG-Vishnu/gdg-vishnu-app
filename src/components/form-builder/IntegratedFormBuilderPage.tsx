@@ -12,9 +12,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Plus, Settings } from "lucide-react";
 import { FieldData, SectionData } from "@/types/form-builder";
 
-import { FieldType } from "@/constants";
-
 import CustomComponents from "@/components/form-builder/custom";
+import { FieldType } from "@prisma/client";
 
 // Custom component renderer - renders custom components with inline configuration
 function renderCustomComponent(field: FieldData) {
