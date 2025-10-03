@@ -14,16 +14,26 @@ import { Plus, X } from "lucide-react";
 import React from "react";
 import FormComponentWrapper from "../FormComponentWrapper";
 
-const CustomMultiSelect = () => {
+interface CustomMultiSelectProps {
+  fieldId?: string;
+  sectionId?: string;
+}
+
+const CustomMultiSelect: React.FC<CustomMultiSelectProps> = ({
+  fieldId,
+  sectionId,
+}) => {
   const defaultValues = defaultFieldConfig[FieldType.MULTISELECT];
   const [labelValue, setLabelValue] = React.useState(defaultValues.label);
   const [options, setOptions] = React.useState([
     { value: "option1", label: "Option 1" },
     { value: "option2", label: "Option 2" },
     { value: "option3", label: "Option 3" },
-    { value: "option4", label: "Option 4" }
+    { value: "option4", label: "Option 4" },
   ]);
-  const [selectedOptions, setSelectedOptions] = React.useState<{value: string, label: string}[]>([]);
+  const [selectedOptions, setSelectedOptions] = React.useState<
+    { value: string; label: string }[]
+  >([]);
   const [minSelections, setMinSelections] = React.useState(0);
   const [maxSelections, setMaxSelections] = React.useState(0);
   const [isRequired, setIsRequired] = React.useState(false);
@@ -31,7 +41,7 @@ const CustomMultiSelect = () => {
   const addOption = () => {
     const newOption = {
       value: `option${options.length + 1}`,
-      label: `Option ${options.length + 1}`
+      label: `Option ${options.length + 1}`,
     };
     setOptions([...options, newOption]);
   };
@@ -40,7 +50,9 @@ const CustomMultiSelect = () => {
     if (options.length > 1) {
       const removedOption = options[index];
       setOptions(options.filter((_, i) => i !== index));
-      setSelectedOptions(selectedOptions.filter(opt => opt.value !== removedOption.value));
+      setSelectedOptions(
+        selectedOptions.filter((opt) => opt.value !== removedOption.value)
+      );
     }
   };
 
@@ -50,12 +62,14 @@ const CustomMultiSelect = () => {
     updatedOptions[index] = {
       ...oldOption,
       label,
-      value: label.toLowerCase().replace(/\s+/g, '_')
+      value: label.toLowerCase().replace(/\s+/g, "_"),
     };
     setOptions(updatedOptions);
-    
+
     // Update selected options if the changed option was selected
-    const selectedIndex = selectedOptions.findIndex(opt => opt.value === oldOption.value);
+    const selectedIndex = selectedOptions.findIndex(
+      (opt) => opt.value === oldOption.value
+    );
     if (selectedIndex !== -1) {
       const updatedSelected = [...selectedOptions];
       updatedSelected[selectedIndex] = updatedOptions[index];
@@ -73,21 +87,24 @@ const CustomMultiSelect = () => {
     });
   };
 
-  const handleDelete = () => {
-    console.log("Deleting multi-select component");
-  };
-
   const previewContent = (
     <>
       <label className="block mb-1">{labelValue || defaultValues.label}</label>
-      <MultiSelector values={selectedOptions} onValuesChange={setSelectedOptions}>
+      <MultiSelector
+        values={selectedOptions}
+        onValuesChange={setSelectedOptions}
+      >
         <MultiSelectorTrigger>
           <MultiSelectorInput placeholder="Select options..." />
         </MultiSelectorTrigger>
         <MultiSelectorContent>
           <MultiSelectorList>
             {options.map((option) => (
-              <MultiSelectorItem key={option.value} value={option.value} label={option.label}>
+              <MultiSelectorItem
+                key={option.value}
+                value={option.value}
+                label={option.label}
+              >
                 {option.label}
               </MultiSelectorItem>
             ))}
@@ -175,9 +192,10 @@ const CustomMultiSelect = () => {
 
   return (
     <FormComponentWrapper
+      fieldId={fieldId}
+      sectionId={sectionId}
       fieldType={FieldType.MULTISELECT}
       onSave={handleSave}
-      onDelete={handleDelete}
       onRequiredChange={setIsRequired}
       isRequired={isRequired}
       configurationContent={configurationContent}

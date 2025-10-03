@@ -5,7 +5,15 @@ import { FieldType } from "@prisma/client";
 import React from "react";
 import FormComponentWrapper from "../FormComponentWrapper";
 
-const CustomDateTime = () => {
+interface CustomDateTimeProps {
+  fieldId?: string;
+  sectionId?: string;
+}
+
+const CustomDateTime: React.FC<CustomDateTimeProps> = ({
+  fieldId,
+  sectionId,
+}) => {
   const defaultValues = defaultFieldConfig[FieldType.DATETIME];
   const [labelValue, setLabelValue] = React.useState(defaultValues.label);
   const [dateTime, setDateTime] = React.useState<Date>();
@@ -21,10 +29,6 @@ const CustomDateTime = () => {
       maxDateTime,
       required: isRequired,
     });
-  };
-
-  const handleDelete = () => {
-    console.log("Deleting datetime component");
   };
 
   const previewContent = (
@@ -78,9 +82,10 @@ const CustomDateTime = () => {
 
   return (
     <FormComponentWrapper
+      fieldId={fieldId}
+      sectionId={sectionId}
       fieldType={FieldType.DATETIME}
       onSave={handleSave}
-      onDelete={handleDelete}
       onRequiredChange={setIsRequired}
       isRequired={isRequired}
       configurationContent={configurationContent}

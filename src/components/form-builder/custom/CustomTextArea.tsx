@@ -7,7 +7,15 @@ import FormComponentWrapper, {
   LabelWithRequired,
 } from "../FormComponentWrapper";
 
-const CustomTextArea = () => {
+interface CustomTextAreaProps {
+  fieldId?: string;
+  sectionId?: string;
+}
+
+const CustomTextArea: React.FC<CustomTextAreaProps> = ({
+  fieldId,
+  sectionId,
+}) => {
   const defaultValues = defaultFieldConfig[FieldType.TEXTAREA];
   const [labelValue, setLabelValue] = React.useState(defaultValues.label);
   const [placeholderValue, setPlaceholderValue] = React.useState(
@@ -17,18 +25,28 @@ const CustomTextArea = () => {
   const [minWords, setMinWords] = React.useState(0);
   const [isRequired, setIsRequired] = React.useState(false);
 
-  const handleSave = () => {
-    console.log("Saving textarea configuration:", {
+  const handleSave = async (): Promise<void> => {
+    const fieldData = {
+      fieldId,
+      sectionId,
+      type: FieldType.TEXTAREA,
       label: labelValue,
       placeholder: placeholderValue,
       minCharacters,
       minWords,
       required: isRequired,
-    });
-  };
+    };
 
-  const handleDelete = () => {
-    console.log("Deleting textarea component");
+    console.log("Saving textarea configuration:", fieldData);
+
+    // Here you would typically call a server action or API
+    // For now, we'll simulate a save operation
+    await new Promise<void>((resolve) => {
+      setTimeout(() => {
+        console.log("Textarea field saved successfully!");
+        resolve();
+      }, 500);
+    });
   };
 
   const previewContent = ({ isRequired }: { isRequired: boolean }) => (
@@ -90,9 +108,10 @@ const CustomTextArea = () => {
 
   return (
     <FormComponentWrapper
+      fieldId={fieldId}
+      sectionId={sectionId}
       fieldType={FieldType.TEXTAREA}
       onSave={handleSave}
-      onDelete={handleDelete}
       onRequiredChange={setIsRequired}
       isRequired={isRequired}
       configurationContent={configurationContent}

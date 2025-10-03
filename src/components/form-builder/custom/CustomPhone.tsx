@@ -5,20 +5,35 @@ import { FieldType } from "@prisma/client";
 import React from "react";
 import FormComponentWrapper from "../FormComponentWrapper";
 
-const CustomPhone = () => {
+interface CustomPhoneProps {
+  fieldId?: string;
+  sectionId?: string;
+}
+
+const CustomPhone: React.FC<CustomPhoneProps> = ({ fieldId, sectionId }) => {
   const defaultValues = defaultFieldConfig[FieldType.PHONE];
   const [labelValue, setLabelValue] = React.useState(defaultValues.label);
   const [isRequired, setIsRequired] = React.useState(false);
 
-  const handleSave = () => {
-    console.log("Saving phone configuration:", {
+  const handleSave = async (): Promise<void> => {
+    const fieldData = {
+      fieldId,
+      sectionId,
+      type: FieldType.PHONE,
       label: labelValue,
       required: isRequired,
-    });
-  };
+    };
 
-  const handleDelete = () => {
-    console.log("Deleting phone component");
+    console.log("Saving phone configuration:", fieldData);
+
+    // Here you would typically call a server action or API
+    // For now, we'll simulate a save operation
+    await new Promise<void>((resolve) => {
+      setTimeout(() => {
+        console.log("Phone field saved successfully!");
+        resolve();
+      }, 500);
+    });
   };
 
   const previewContent = (
@@ -42,9 +57,10 @@ const CustomPhone = () => {
 
   return (
     <FormComponentWrapper
+      fieldId={fieldId}
+      sectionId={sectionId}
       fieldType={FieldType.PHONE}
       onSave={handleSave}
-      onDelete={handleDelete}
       onRequiredChange={setIsRequired}
       isRequired={isRequired}
       configurationContent={configurationContent}

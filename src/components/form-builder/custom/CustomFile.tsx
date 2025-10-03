@@ -12,7 +12,12 @@ import { CloudUpload, Paperclip } from "lucide-react";
 import React from "react";
 import FormComponentWrapper from "../FormComponentWrapper";
 
-const CustomFile = () => {
+interface CustomFileProps {
+  fieldId?: string;
+  sectionId?: string;
+}
+
+const CustomFile: React.FC<CustomFileProps> = ({ fieldId, sectionId }) => {
   const defaultValues = defaultFieldConfig[FieldType.FILE];
   const [labelValue, setLabelValue] = React.useState(defaultValues.label);
   const [files, setFiles] = React.useState<File[] | null>(null);
@@ -22,35 +27,53 @@ const CustomFile = () => {
   const [isRequired, setIsRequired] = React.useState(false);
 
   const fileFormats = [
-    { id: "image", label: "Images (jpg, png, gif)", value: ".jpg,.jpeg,.png,.gif" },
-    { id: "document", label: "Documents (pdf, doc, docx)", value: ".pdf,.doc,.docx" },
+    {
+      id: "image",
+      label: "Images (jpg, png, gif)",
+      value: ".jpg,.jpeg,.png,.gif",
+    },
+    {
+      id: "document",
+      label: "Documents (pdf, doc, docx)",
+      value: ".pdf,.doc,.docx",
+    },
     { id: "video", label: "Videos (mp4, avi, mov)", value: ".mp4,.avi,.mov" },
     { id: "audio", label: "Audio (mp3, wav, m4a)", value: ".mp3,.wav,.m4a" },
   ];
 
   const handleFormatChange = (formatId: string, checked: boolean) => {
-    const format = fileFormats.find(f => f.id === formatId);
+    const format = fileFormats.find((f) => f.id === formatId);
     if (!format) return;
 
     if (checked) {
       setAcceptedFormats([...acceptedFormats, format.value]);
     } else {
-      setAcceptedFormats(acceptedFormats.filter(f => f !== format.value));
+      setAcceptedFormats(acceptedFormats.filter((f) => f !== format.value));
     }
   };
 
-  const handleSave = () => {
-    console.log("Saving file configuration:", {
+  const handleSave = async (): Promise<void> => {
+    const fieldData = {
+      fieldId,
+      sectionId,
+      type: FieldType.FILE,
       label: labelValue,
       acceptedFormats,
       maxFileSize,
       maxFiles,
       required: isRequired,
-    });
-  };
+    };
 
-  const handleDelete = () => {
-    console.log("Deleting file component");
+    console.log("Saving file configuration:", fieldData);
+
+    // Here you would typically call a server action or API
+    // For now, we'll simulate a save operation
+    await new Promise<void>((resolve) => {
+      setTimeout(() => {
+        console.log("File field saved successfully!");
+        resolve();
+      }, 500);
+    });
   };
 
   const dropZoneConfig = {
@@ -76,10 +99,9 @@ const CustomFile = () => {
               &nbsp; or drag and drop
             </p>
             <p className="text-xs text-gray-500">
-              {acceptedFormats.length > 0 
+              {acceptedFormats.length > 0
                 ? `Accepted formats: ${acceptedFormats.join(", ")}`
-                : "All file types accepted"
-              }
+                : "All file types accepted"}
             </p>
             <p className="text-xs text-gray-500">
               Max {maxFileSize}MB, {maxFiles} file{maxFiles > 1 ? "s" : ""}
@@ -120,7 +142,7 @@ const CustomFile = () => {
               <Checkbox
                 id={format.id}
                 checked={acceptedFormats.includes(format.value)}
-                onCheckedChange={(checked) => 
+                onCheckedChange={(checked) =>
                   handleFormatChange(format.id, checked as boolean)
                 }
               />
@@ -159,9 +181,10 @@ const CustomFile = () => {
 
   return (
     <FormComponentWrapper
+      fieldId={fieldId}
+      sectionId={sectionId}
       fieldType={FieldType.FILE}
       onSave={handleSave}
-      onDelete={handleDelete}
       onRequiredChange={setIsRequired}
       isRequired={isRequired}
       configurationContent={configurationContent}

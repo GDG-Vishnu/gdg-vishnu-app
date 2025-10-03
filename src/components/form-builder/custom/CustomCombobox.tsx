@@ -7,7 +7,15 @@ import React from "react";
 import { UniversalCombobox } from "@/components/combobox/universal-combobox";
 import FormComponentWrapper from "../FormComponentWrapper";
 
-const CustomCombobox = () => {
+interface CustomComboboxProps {
+  fieldId?: string;
+  sectionId?: string;
+}
+
+const CustomCombobox: React.FC<CustomComboboxProps> = ({
+  fieldId,
+  sectionId,
+}) => {
   const defaultValues = defaultFieldConfig[FieldType.COMBOBOX];
   const [labelValue, setLabelValue] = React.useState(defaultValues.label);
   const [options, setOptions] = React.useState([
@@ -48,10 +56,6 @@ const CustomCombobox = () => {
       minFieldsRequired,
       required: isRequired,
     });
-  };
-
-  const handleDelete = () => {
-    console.log("Deleting combobox component");
   };
 
   const previewContent = (
@@ -130,9 +134,10 @@ const CustomCombobox = () => {
 
   return (
     <FormComponentWrapper
+      fieldId={fieldId}
+      sectionId={sectionId}
       fieldType={FieldType.COMBOBOX}
       onSave={handleSave}
-      onDelete={handleDelete}
       onRequiredChange={setIsRequired}
       isRequired={isRequired}
       configurationContent={configurationContent}

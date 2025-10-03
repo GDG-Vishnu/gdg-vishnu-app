@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, createContext, useContext } from "react";
+import React, { useCallback, createContext, useContext, useState } from "react";
 import { useParams } from "next/navigation";
 import { FieldType } from "@prisma/client";
 import {
@@ -12,12 +12,15 @@ import { useForm } from "@/hooks/use-form-data";
 import { ComponentPalette } from "./ComponentPalette";
 import type { FieldConfiguration } from "./FormBuilderContext";
 import { FormData } from "@/types/form-builder";
+import { AddComponentLoading } from "./loading-pages";
 
 // Context for form builder integration
 interface FormBuilderIntegrationContextType {
   formId: string;
   formData: FormData | null;
   isLoading: boolean;
+  isAdding: boolean;
+  addingComponentName: string;
 
   // Actions
   addFieldToSection: (sectionId: string, fieldType: FieldType) => Promise<void>;
@@ -48,6 +51,10 @@ export function FormBuilderIntegrationProvider({
   const params = useParams();
   const formId = params?.id as string;
 
+  // State for adding components
+  const [isAdding, setIsAdding] = useState(false);
+  const [addingComponentName, setAddingComponentName] = useState("");
+
   // React Query hooks - must be called before any returns
   const { data: formData, isLoading } = useForm(formId || "");
   const createFieldMutation = useCreateField();
@@ -60,6 +67,11 @@ export function FormBuilderIntegrationProvider({
   const addFieldToSection = useCallback(
     async (sectionId: string, fieldType: FieldType) => {
       try {
+        // Set loading state
+        const componentName = fieldType.replace(/_/g, " ").toLowerCase();
+        setAddingComponentName(componentName);
+        setIsAdding(true);
+
         // Get current fields in section to determine order
         const section = formData?.sections?.find((s) => s.id === sectionId);
         const currentFieldCount = section?.fields?.length || 0;
@@ -76,6 +88,9 @@ export function FormBuilderIntegrationProvider({
         // No modal - fields will render with inline configuration
       } catch (error) {
         console.error("Error adding field:", error);
+      } finally {
+        setIsAdding(false);
+        setAddingComponentName("");
       }
     },
     [formData, createFieldMutation]
@@ -129,6 +144,8 @@ export function FormBuilderIntegrationProvider({
     formId,
     formData: (formData as FormData) || null,
     isLoading,
+    isAdding,
+    addingComponentName,
     addFieldToSection,
     saveField,
     deleteField,
@@ -137,6 +154,8 @@ export function FormBuilderIntegrationProvider({
   return (
     <FormBuilderIntegrationContext.Provider value={value}>
       {children}
+      {/* Add Component Loading */}
+      {isAdding && <AddComponentLoading componentName={addingComponentName} />}
     </FormBuilderIntegrationContext.Provider>
   );
 }

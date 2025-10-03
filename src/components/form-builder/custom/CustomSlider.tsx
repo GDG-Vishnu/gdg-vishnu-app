@@ -5,7 +5,12 @@ import { FieldType } from "@prisma/client";
 import React from "react";
 import FormComponentWrapper from "../FormComponentWrapper";
 
-const CustomSlider = () => {
+interface CustomSliderProps {
+  fieldId?: string;
+  sectionId?: string;
+}
+
+const CustomSlider: React.FC<CustomSliderProps> = ({ fieldId, sectionId }) => {
   const defaultValues = defaultFieldConfig[FieldType.SLIDER];
   const [labelValue, setLabelValue] = React.useState(defaultValues.label);
   const [value, setValue] = React.useState([50]);
@@ -14,19 +19,29 @@ const CustomSlider = () => {
   const [step, setStep] = React.useState(1);
   const [isRequired, setIsRequired] = React.useState(false);
 
-  const handleSave = () => {
-    console.log("Saving slider configuration:", {
+  const handleSave = async (): Promise<void> => {
+    const fieldData = {
+      fieldId,
+      sectionId,
+      type: FieldType.SLIDER,
       label: labelValue,
       value,
       min: minValue,
       max: maxValue,
       step,
       required: isRequired,
-    });
-  };
+    };
 
-  const handleDelete = () => {
-    console.log("Deleting slider component");
+    console.log("Saving slider configuration:", fieldData);
+
+    // Here you would typically call a server action or API
+    // For now, we'll simulate a save operation
+    await new Promise<void>((resolve) => {
+      setTimeout(() => {
+        console.log("Slider field saved successfully!");
+        resolve();
+      }, 500);
+    });
   };
 
   const previewContent = (
@@ -110,9 +125,10 @@ const CustomSlider = () => {
 
   return (
     <FormComponentWrapper
+      fieldId={fieldId}
+      sectionId={sectionId}
       fieldType={FieldType.SLIDER}
       onSave={handleSave}
-      onDelete={handleDelete}
       onRequiredChange={setIsRequired}
       isRequired={isRequired}
       configurationContent={configurationContent}

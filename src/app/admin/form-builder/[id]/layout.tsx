@@ -3,8 +3,7 @@
 import React from "react";
 import { FormBuilderTopBar } from "@/components/form-builder/FormBuilderTopBar";
 import { FormBuilderRightSidebar } from "@/components/form-builder/FormBuilderRightSidebar";
-import { type FieldType } from "@/constants";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useForm, useCreateSection } from "@/hooks/use-form-data";
 import {
   Sheet,
@@ -18,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Plus } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { FieldType } from "@prisma/client";
 
 interface FormBuilderLayoutProps {
   children: React.ReactNode;
@@ -25,6 +25,7 @@ interface FormBuilderLayoutProps {
 
 const FormBuilderLayout: React.FC<FormBuilderLayoutProps> = ({ children }) => {
   const { id } = useParams();
+  const router = useRouter();
   const formId = id as string;
 
   const { data: formData, isLoading } = useForm(formId);
@@ -40,13 +41,9 @@ const FormBuilderLayout: React.FC<FormBuilderLayoutProps> = ({ children }) => {
   };
 
   const handlePreview = () => {
-    console.log("Preview form");
-    // TODO: Implement preview functionality
-  };
-
-  const handleCancel = () => {
-    console.log("Cancel form");
-    // TODO: Implement cancel functionality
+    if (formData) {
+      router.push(`/admin/form-builder/${formId}/preview`);
+    }
   };
 
   const handleTabChange = (tab: string) => {
@@ -93,12 +90,12 @@ const FormBuilderLayout: React.FC<FormBuilderLayoutProps> = ({ children }) => {
     <div className="h-screen flex flex-col bg-background">
       {/* Top Bar */}
       <FormBuilderTopBar
+        formId={formId}
         formTitle={formData?.name}
         activeTab={activeTab}
         sections={sections}
         onSave={handleSave}
         onPreview={handlePreview}
-        onCancel={handleCancel}
         onTabChange={handleTabChange}
         onAddTab={handleAddTab}
         isLoading={isLoading}

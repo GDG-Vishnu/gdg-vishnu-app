@@ -13,7 +13,12 @@ import { Plus, X } from "lucide-react";
 import React from "react";
 import FormComponentWrapper from "../FormComponentWrapper";
 
-const CustomSelect = () => {
+interface CustomSelectProps {
+  fieldId?: string;
+  sectionId?: string;
+}
+
+const CustomSelect: React.FC<CustomSelectProps> = ({ fieldId, sectionId }) => {
   const defaultValues = defaultFieldConfig[FieldType.SELECT];
   const [labelValue, setLabelValue] = React.useState(defaultValues.label);
   const [options, setOptions] = React.useState([
@@ -47,16 +52,26 @@ const CustomSelect = () => {
     setOptions(updatedOptions);
   };
 
-  const handleSave = () => {
-    console.log("Saving select configuration:", {
+  const handleSave = async (): Promise<void> => {
+    const fieldData = {
+      fieldId,
+      sectionId,
+      type: FieldType.SELECT,
       label: labelValue,
       options,
       required: isRequired,
-    });
-  };
+    };
 
-  const handleDelete = () => {
-    console.log("Deleting select component");
+    console.log("Saving select configuration:", fieldData);
+
+    // Here you would typically call a server action or API
+    // For now, we'll simulate a save operation
+    await new Promise<void>((resolve) => {
+      setTimeout(() => {
+        console.log("Select field saved successfully!");
+        resolve();
+      }, 500);
+    });
   };
 
   const previewContent = (
@@ -131,9 +146,10 @@ const CustomSelect = () => {
 
   return (
     <FormComponentWrapper
+      fieldId={fieldId}
+      sectionId={sectionId}
       fieldType={FieldType.SELECT}
       onSave={handleSave}
-      onDelete={handleDelete}
       onRequiredChange={setIsRequired}
       isRequired={isRequired}
       configurationContent={configurationContent}

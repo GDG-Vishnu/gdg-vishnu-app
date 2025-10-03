@@ -46,11 +46,20 @@ function renderCustomComponent(field: FieldData) {
   if (!Component) {
     // Fallback to Input component
     const FallbackComponent = CustomComponents["Input"];
-    return <FallbackComponent key={field.id} />;
+    return (
+      <FallbackComponent
+        key={field.id}
+        fieldId={field.id}
+        sectionId={field.sectionId}
+      />
+    );
   }
 
   // Render the custom component which includes FormComponentWrapper with inline configuration
-  return <Component key={field.id} />;
+  // Pass fieldId and sectionId so the component can access database operations
+  return (
+    <Component key={field.id} fieldId={field.id} sectionId={field.sectionId} />
+  );
 }
 
 // Component to render individual fields with inline configuration

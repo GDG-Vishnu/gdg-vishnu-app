@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useForms } from "@/hooks/use-forms";
 import GradientCard from "@/components/global/GradientCard";
 import { CreateFormSheet } from "@/components/forms/CreateFormSheet";
@@ -8,13 +8,26 @@ import { Button3D } from "@/components/ui/3d-button";
 import { Button } from "@/components/ui/button";
 import { Plus, Loader2, AlertCircle, ShieldAlert } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { FormLoading } from "@/components/form-builder/loading-pages";
 
 const FormsPage = () => {
   const { data: forms, isLoading, error, isError } = useForms();
   const router = useRouter();
+  const [formLoading, setFormLoading] = useState(false);
+  const [loadingFormName, setLoadingFormName] = useState("");
 
-  const handleFormClick = (formId: string) => {
+  const handleFormClick = (formId: string, formName: string) => {
+    setLoadingFormName(formName);
+    setFormLoading(true);
+
+    // Navigate to form builder
     router.push(`/admin/form-builder/${formId}`);
+
+    // Note: Loading will be hidden when the new page loads
+    // We could also hide it after a short delay as backup
+    setTimeout(() => {
+      setFormLoading(false);
+    }, 3000); // Backup timeout
   };
 
   const getVariantForIndex = (index: number) => {
@@ -109,7 +122,7 @@ const FormsPage = () => {
                   key={form.id}
                   variant={getVariantForIndex(index)}
                   form={form}
-                  onClick={() => handleFormClick(form.id)}
+                  onClick={() => handleFormClick(form.id, form.name)}
                 />
               ))}
             </div>
@@ -137,6 +150,9 @@ const FormsPage = () => {
           )}
         </>
       )}
+
+      {/* Form Loading Component */}
+      {formLoading && <FormLoading formName={loadingFormName} />}
     </div>
   );
 };

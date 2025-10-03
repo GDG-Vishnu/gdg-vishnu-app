@@ -7,20 +7,38 @@ import FormComponentWrapper, {
   LabelWithRequired,
 } from "../FormComponentWrapper";
 
-const CustomCheckbox = () => {
+interface CustomCheckboxProps {
+  fieldId?: string;
+  sectionId?: string;
+}
+
+const CustomCheckbox: React.FC<CustomCheckboxProps> = ({
+  fieldId,
+  sectionId,
+}) => {
   const defaultValues = defaultFieldConfig[FieldType.CHECKBOX];
   const [labelValue, setLabelValue] = React.useState(defaultValues.label);
   const [isRequired, setIsRequired] = React.useState(false);
 
-  const handleSave = () => {
-    console.log("Saving checkbox configuration:", {
+  const handleSave = async (): Promise<void> => {
+    const fieldData = {
+      fieldId,
+      sectionId,
+      type: FieldType.CHECKBOX,
       label: labelValue,
       required: isRequired,
-    });
-  };
+    };
 
-  const handleDelete = () => {
-    console.log("Deleting checkbox component");
+    console.log("Saving checkbox configuration:", fieldData);
+
+    // Here you would typically call a server action or API
+    // For now, we'll simulate a save operation
+    await new Promise<void>((resolve) => {
+      setTimeout(() => {
+        console.log("Checkbox field saved successfully!");
+        resolve();
+      }, 500);
+    });
   };
 
   const previewContent = ({ isRequired }: { isRequired: boolean }) => (
@@ -49,9 +67,10 @@ const CustomCheckbox = () => {
 
   return (
     <FormComponentWrapper
+      fieldId={fieldId}
+      sectionId={sectionId}
       fieldType={FieldType.CHECKBOX}
       onSave={handleSave}
-      onDelete={handleDelete}
       onRequiredChange={setIsRequired}
       isRequired={isRequired}
       configurationContent={configurationContent}

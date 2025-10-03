@@ -14,7 +14,12 @@ import { format } from "date-fns";
 import React from "react";
 import FormComponentWrapper from "../FormComponentWrapper";
 
-const CustomDate = () => {
+interface CustomDateProps {
+  fieldId?: string;
+  sectionId?: string;
+}
+
+const CustomDate: React.FC<CustomDateProps> = ({ fieldId, sectionId }) => {
   const defaultValues = defaultFieldConfig[FieldType.DATE];
   const [labelValue, setLabelValue] = React.useState(defaultValues.label);
   const [date, setDate] = React.useState<Date>();
@@ -30,10 +35,6 @@ const CustomDate = () => {
       maxDate,
       required: isRequired,
     });
-  };
-
-  const handleDelete = () => {
-    console.log("Deleting date component");
   };
 
   const previewContent = (
@@ -100,9 +101,10 @@ const CustomDate = () => {
 
   return (
     <FormComponentWrapper
+      fieldId={fieldId}
+      sectionId={sectionId}
       fieldType={FieldType.DATE}
       onSave={handleSave}
-      onDelete={handleDelete}
       onRequiredChange={setIsRequired}
       isRequired={isRequired}
       configurationContent={configurationContent}

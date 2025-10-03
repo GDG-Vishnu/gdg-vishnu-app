@@ -10,7 +10,12 @@ import FormComponentWrapper, {
   LabelWithRequired,
 } from "../FormComponentWrapper";
 
-const CustomRadio = () => {
+interface CustomRadioProps {
+  fieldId?: string;
+  sectionId?: string;
+}
+
+const CustomRadio: React.FC<CustomRadioProps> = ({ fieldId, sectionId }) => {
   const defaultValues = defaultFieldConfig[FieldType.RADIO];
   const [labelValue, setLabelValue] = React.useState(defaultValues.label);
   const [options, setOptions] = React.useState([
@@ -49,10 +54,6 @@ const CustomRadio = () => {
       options,
       required: isRequired,
     });
-  };
-
-  const handleDelete = () => {
-    console.log("Deleting radio component");
   };
 
   const previewContent = ({ isRequired }: { isRequired: boolean }) => (
@@ -125,9 +126,10 @@ const CustomRadio = () => {
 
   return (
     <FormComponentWrapper
+      fieldId={fieldId}
+      sectionId={sectionId}
       fieldType={FieldType.RADIO}
       onSave={handleSave}
-      onDelete={handleDelete}
       onRequiredChange={setIsRequired}
       isRequired={isRequired}
       configurationContent={configurationContent}

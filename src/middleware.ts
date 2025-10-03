@@ -25,10 +25,6 @@ export default withAuth(
       }
     }
 
-    console.log({
-      token,
-    });
-
     // Check if user has permission to access admin routes
     if (pathname.startsWith("/admin")) {
       const adminRoles = [

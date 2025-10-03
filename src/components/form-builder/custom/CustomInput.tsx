@@ -6,22 +6,52 @@ import FormComponentWrapper, {
   LabelWithRequired,
 } from "../FormComponentWrapper";
 
-const CustomInput = () => {
-  const defaultValues = defaultFieldConfig[FieldType.INPUT];
-  const [inputValue, setInputValue] = React.useState(defaultValues.placeholder);
-  const [labelValue, setLabelValue] = React.useState(defaultValues.label);
-  const [isRequired, setIsRequired] = React.useState(false);
+interface CustomInputProps {
+  fieldId?: string;
+  sectionId?: string;
+  initialData?: {
+    label?: string;
+    placeholder?: string;
+    required?: boolean;
+  };
+}
 
-  const handleSave = () => {
-    console.log("Saving input configuration:", {
+const CustomInput: React.FC<CustomInputProps> = ({
+  fieldId,
+  sectionId,
+  initialData,
+}) => {
+  const defaultValues = defaultFieldConfig[FieldType.INPUT];
+  const [inputValue, setInputValue] = React.useState(
+    initialData?.placeholder || defaultValues.placeholder
+  );
+  const [labelValue, setLabelValue] = React.useState(
+    initialData?.label || defaultValues.label
+  );
+  const [isRequired, setIsRequired] = React.useState(
+    initialData?.required || false
+  );
+
+  const handleSave = async (): Promise<void> => {
+    const fieldData = {
+      fieldId,
+      sectionId,
+      type: FieldType.INPUT,
       label: labelValue,
       placeholder: inputValue,
       required: isRequired,
-    });
-  };
+    };
 
-  const handleDelete = () => {
-    console.log("Deleting input component");
+    console.log("Saving input configuration:", fieldData);
+
+    // Here you would typically call a server action or API
+    // For now, we'll simulate a save operation
+    await new Promise<void>((resolve) => {
+      setTimeout(() => {
+        console.log("Input field saved successfully!");
+        resolve();
+      }, 500);
+    });
   };
 
   const previewContent = ({ isRequired }: { isRequired: boolean }) => (
@@ -62,9 +92,10 @@ const CustomInput = () => {
 
   return (
     <FormComponentWrapper
+      fieldId={fieldId}
+      sectionId={sectionId}
       fieldType={FieldType.INPUT}
       onSave={handleSave}
-      onDelete={handleDelete}
       onRequiredChange={setIsRequired}
       isRequired={isRequired}
       configurationContent={configurationContent}

@@ -10,10 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 const ComingSoonPage = () => {
   const { data: session } = useSession();
   const router = useRouter();
-
-  console.log({
-    session,
-  });
+  const isLoggedIn = !!session;
 
   const handleLogout = async () => {
     try {
@@ -26,15 +23,14 @@ const ComingSoonPage = () => {
       router.push("/");
     }
   };
-
   return (
     <div className="min-h-screen bg-white relative overflow-hidden">
       {/* Top right user info and logout button - responsive design */}
       {session && (
         <div className="absolute top-4 right-4 md:top-6 md:right-6 z-20 flex flex-col sm:flex-row items-end sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
           {/* User Avatar and Info */}
-          <div className="flex items-center space-x-2 border rounded-full p-1 shadow-xs w-32">
-            <Avatar className="h-6 w-6 sm:h-8 sm:w-8">
+          <div className="flex items-center space-x-2 border rounded-full p-1 shadow-xs min-w-0 max-w-48">
+            <Avatar className="h-6 w-6 sm:h-8 sm:w-8 flex-shrink-0">
               <AvatarImage
                 src={session.user?.image || ""}
                 alt={session.user?.name || "User"}
@@ -45,8 +41,8 @@ const ComingSoonPage = () => {
                 )}
               </AvatarFallback>
             </Avatar>
-            <div className="text-xs sm:text-sm">
-              <p className="font-medium text-gray-900 truncate max-w-20 sm:max-w-none">
+            <div className="text-xs sm:text-sm flex-1 min-w-0">
+              <p className="font-medium text-gray-900 truncate">
                 {session.user?.name || "User"}
               </p>
               {/* <p className="text-xs text-gray-500 hidden sm:block">
@@ -54,7 +50,6 @@ const ComingSoonPage = () => {
               </p> */}
             </div>
           </div>
-
           {/* Logout Button */}
           <MagneticButton
             variant="destructive"
@@ -157,7 +152,18 @@ const ComingSoonPage = () => {
           <MagneticButton className="px-12">Coming Soon</MagneticButton>
         </div>
 
-        {/* Description */}
+        {/* Admin button n check if the user is logged in */}
+        {isLoggedIn && (
+          <div className="text-center mb-8">
+            <MagneticButton
+              onClick={() => router.push("/admin")}
+              variant="default"
+              className="px-12 bg-blue-600 hover:bg-blue-700"
+            >
+              Admin
+            </MagneticButton>
+          </div>
+        )}
 
         {/* Google-colored decorative elements */}
         <div className="flex items-center space-x-4">
@@ -183,5 +189,4 @@ const ComingSoonPage = () => {
     </div>
   );
 };
-
 export default ComingSoonPage;

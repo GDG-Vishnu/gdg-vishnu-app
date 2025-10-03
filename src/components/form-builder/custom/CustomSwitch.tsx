@@ -6,7 +6,12 @@ import { FieldType } from "@prisma/client";
 import React from "react";
 import FormComponentWrapper from "../FormComponentWrapper";
 
-const CustomSwitch = () => {
+interface CustomSwitchProps {
+  fieldId?: string;
+  sectionId?: string;
+}
+
+const CustomSwitch: React.FC<CustomSwitchProps> = ({ fieldId, sectionId }) => {
   const defaultValues = defaultFieldConfig[FieldType.SWITCH];
   const [labelValue, setLabelValue] = React.useState(defaultValues.label);
   const [checkedByDefault, setCheckedByDefault] = React.useState(false);
@@ -18,10 +23,6 @@ const CustomSwitch = () => {
       checkedByDefault,
       required: isRequired,
     });
-  };
-
-  const handleDelete = () => {
-    console.log("Deleting switch component");
   };
 
   const previewContent = (
@@ -59,9 +60,10 @@ const CustomSwitch = () => {
 
   return (
     <FormComponentWrapper
+      fieldId={fieldId}
+      sectionId={sectionId}
       fieldType={FieldType.SWITCH}
       onSave={handleSave}
-      onDelete={handleDelete}
       onRequiredChange={setIsRequired}
       isRequired={isRequired}
       configurationContent={configurationContent}
